@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebTrio — Разработка для бизнеса</title>
+<style>
+    :root {
+      --color-primary: #2563EB;
+      --color-primary-hover: #1D4ED8;
+      --color-bg: #F8FAFC;
+      --color-white: #FFFFFF;
+      --color-text: #0F172A;
+      --color-text-light: #475569;
+      --color-border: #E2E8F0;
+      --font-main: system-ui, -apple-system, sans-serif;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-main); color: var(--color-text); line-height: 1.6; background: var(--color-bg); }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    section { padding: 80px 0; }
+    h1, h2, h3 { line-height: 1.2; margin-bottom: 16px; }
+    h2 { font-size: 2rem; text-align: center; margin-bottom: 40px; }
+    
+    .btn { display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #2563EB, #4F46E5); color: white; border-radius: var(--radius); font-weight: 500; transition: 0.2s; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3); }
+
+    header { background: var(--color-white); box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+    nav { display: flex; justify-content: space-between; align-items: center; height: 70px; }
+    .logo { font-size: 1.5rem; font-weight: 700; color: var(--color-primary); }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a:hover { color: var(--color-primary); }
+
+    /* Hero - НОВЫЙ: Тёмный фон с нейросетью */
+#hero { 
+  background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url('images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  text-align: center; 
+  padding: 140px 0 100px; 
+  color: white;
+}
+#hero h1 { font-size: 2.8rem; margin-bottom: 20px; color: #FFFFFF; text-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+#hero p { font-size: 1.2rem; color: #E2E8F0; max-width: 600px; margin: 0 auto 30px; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+    .team-card { background: var(--color-white); padding: 30px; border-radius: var(--radius); box-shadow: 0 4px 12px rgba(0,0,0,0.06); text-align: center; transition: transform 0.2s; }
+    .team-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px -8px rgba(37, 99, 235, 0.15); }
+    .avatar { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 20px; object-fit: cover; }
+    .team-card h3 { margin-bottom: 8px; }
+    .role { color: var(--color-primary); font-weight: 500; margin-bottom: 12px; display: block; }
+    .bio { color: var(--color-text-light); font-size: 0.95rem; }
+
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+    .service-card { background: var(--color-white); padding: 24px; border-radius: var(--radius); border: 1px solid var(--color-border); text-align: center; transition: 0.2s; }
+    .service-card:hover { box-shadow: 0 12px 24px -8px rgba(37, 99, 235, 0.1); transform: translateY(-3px); border-color: var(--color-primary); }
+    .icon { font-size: 2rem; margin-bottom: 12px; }
+
+    .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; justify-content: center; }
+    .portfolio-card { background: var(--color-white); border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); transition: 0.2s; max-width: 450px; margin: 0 auto; }
+    .portfolio-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px -8px rgba(37, 99, 235, 0.12); }
+    .portfolio-content { padding: 20px; }
+    .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .tag { background: #EFF6FF; color: var(--color-primary); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+
+    #contacts { background: var(--color-white); text-align: center; }
+    .contact-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 30px; }
+    .contact-btn { padding: 12px 24px; border-radius: var(--radius); font-weight: 500; transition: 0.2s; border: 1px solid var(--color-border); background: transparent; }
+    .contact-btn:hover { background: var(--color-bg); border-color: var(--color-primary); color: var(--color-primary); }
+
+    footer { background: #0F172A; color: #94A3B8; padding: 30px 0; text-align: center; font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      #hero h1 { font-size: 2rem; }
+      #hero { background-attachment: scroll; padding: 100px 0 60px; } /* Отключаем параллакс на мобильных */
+      .nav-links { gap: 16px; font-size: 0.9rem; }
+      section { padding: 60px 0; }
+    }
+</style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="#" class="logo">WebTrio</a>
+        <ul class="nav-links">
+          <li><a href="#team">Команда</a></li>
+          <li><a href="#services">Услуги</a></li>
+          <li><a href="#portfolio">Работы</a></li>
+          <li><a href="#contacts">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="hero">
+      <div class="container">
+        <h1>Создаём цифровые решения для вашего бизнеса</h1>
+        <p>Разрабатываем сайты, лендинги и ботов, которые помогают привлекать клиентов и автоматизировать процессы.</p>
+        <a href="#contacts" class="btn">Обсудить проект</a>
+      </div>
+    </section>
+
+           <section id="team">
+      <div class="container">
+        <h2>Наша команда</h2>
+        <div class="team-grid">
+          <!-- 1. Алексей -->
+          <div class="team-card">
+            <img src="images/11.png" alt="Алексей" class="avatar" style="object-fit: cover;">
+            <h3>Алексей</h3>
+            <span class="role">Frontend & Дизайн</span>
+            <p class="bio">Строит надёжную логику, подключает базы данных и настраивает интеграции.</p>
+          </div>
+
+          
+          <!-- 2. Мария -->
+          <div class="team-card">
+            <img src="images/22.png" alt="Мария" class="avatar" style="object-fit: cover;">
+            <h3>Мария</h3>
+            <span class="role">Backend & Автоматизация</span>
+            <p class="bio">Превращает идеи в удобные и красивые интерфейсы. Отвечает за визуал и адаптивность.</p>
+          </div>
+          
+          <!-- 3. Константин -->
+          <div class="team-card">
+            <img src="images/33.png" alt="Константин" class="avatar" style="object-fit: cover;">
+            <h3>Константин</h3>
+            <span class="role">Боты & Маркетинг</span>
+            <p class="bio">Разрабатывает Telegram-ботов, настраивает аналитику и помогает с продвижением.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" style="background: var(--color-bg);">
+      <div class="container">
+        <h2>Что мы делаем</h2>
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="icon">🌐</div>
+            <h3>Сайты под ключ</h3>
+            <p>Корпоративные сайты, каталоги и визитки с адаптивным дизайном.</p>
+          </div>
+          <div class="service-card">
+            <div class="icon">📈</div>
+            <h3>Лендинги</h3>
+            <p>Продающие одностраничники с высокой конверсией.</p>
+          </div>
+          <div class="service-card">
+            <div class="icon">🤖</div>
+            <h3>Боты & Автоматизация</h3>
+            <p>Telegram/WhatsApp боты для продаж, поддержки и рассылок.</p>
+          </div>
+          <div class="service-card">
+            <div class="icon">⚙️</div>
+            <h3>Техподдержка</h3>
+            <p>Обновления, доработки, SEO-оптимизация и хостинг.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+                <section id="portfolio">
+      <div class="container">
+        <h2>Наши работы</h2>
+        <div class="portfolio-grid" style="justify-content: center;">
+          
+          <!-- Карточка 1: Сайт -->
+          <div class="portfolio-card" style="max-width: 450px; margin: 0 auto;">
+            <a href="https://019d0790-a09b-7ac7-bdb3-a33059c06f66.arena.site/" target="_blank" style="display:block;">
+              <img src="images/1.jpg" alt="Сайт проекта" style="width:100%; height:200px; object-fit:cover; border-radius:12px 12px 0 0;">
+            </a>
+            <div class="portfolio-content">
+              <h3>Сайт для бизнеса</h3>
+              <p>Адаптивный лендинг с формой заявки.</p>
+              <div class="tags"><span class="tag">HTML/CSS</span><span class="tag">JS</span></div>
+            </div>
+          </div>
+          
+          <!-- Карточка 2: Бот -->
+          <div class="portfolio-card" style="max-width: 450px; margin: 0 auto;">
+            <a href="https://t.me/Kostyan6631_bot?start=dl-1773125451988ecdcef92e" target="_blank" style="display:block;">
+              <img src="images/1.png" alt="Telegram-бот" style="width:100%; height:200px; object-fit:cover; border-radius:12px 12px 0 0;">
+            </a>
+            <div class="portfolio-content">
+              <h3>Бот для бизнеса</h3>
+              <p>Автоматизация заказов и уведомлений.</p>
+              <div class="tags"><span class="tag">Telegram</span><span class="tag">Python</span></div>
+            </div>
+          </div>
+          
+          <!-- Карточка 3: VK тест -->
+          <div class="portfolio-card" style="max-width: 450px; margin: 0 auto;">
+            <a href="https://vk.com/club236967868" target="_blank" style="display:block;">
+              <img src="images/44.jpg" alt="Связь поколений" style="width:100%; height:200px; object-fit:cover; border-radius:12px 12px 0 0;">
+            </a>
+            <div class="portfolio-content">
+              <h3>Связь поколений</h3>
+              <p>Тест на близость в ВКонтакте. Реальные подписчики и вовлечённость.</p>
+              <div class="tags"><span class="tag">VK API</span><span class="tag">Тесты</span><span class="tag">Сообщество</span></div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+            <!-- AI Storytelling Section -->
+<section id="ai-storytelling" style="background: #F8FAFC; padding: 80px 0;">
+  <div class="container">
+    <h2 style="margin-bottom: 10px; text-align: center;">AI Storytelling</h2>
+    <p style="text-align: center; color: #64748B; max-width: 600px; margin: 0 auto 50px;">
+      Генерация визуальных историй с сохранением единых персонажей. 
+      Демонстрация полного контроля над нейросетью.
+    </p>
+    
+    <!-- Сетка с историей -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+      
+      <!-- 00.jpg -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        <img src="images1/00.jpg" alt="Начало" style="width:100%; height: 300px; object-fit: cover;">
+        <div style="padding: 20px;">
+          <div style="font-weight: bold; margin-bottom: 8px; color: #2563EB;">🌧️ Начало</div>
+          <p style="font-size: 0.9rem; color: #64748B; margin: 0;">Дождливый вечер, мысли о будущем. Атмосфера и настроение.</p>
+        </div>
+      </div>
+
+      <!-- 01.jpg -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        <img src="images1/01.jpg" alt="Встреча" style="width:100%; height: 300px; object-fit: cover;">
+        <div style="padding: 20px;">
+          <div style="font-weight: bold; margin-bottom: 8px; color: #2563EB;">☕ Первая встреча</div>
+          <p style="font-size: 0.9rem; color: #64748B; margin: 0;">Знакомство за чашкой кофе. Тёплый свет, живые эмоции.</p>
+        </div>
+      </div>
+
+      <!-- 02.jpg -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        <img src="images1/02.jpg" alt="Романтика" style="width:100%; height: 300px; object-fit: cover;">
+        <div style="padding: 20px;">
+          <div style="font-weight: bold; margin-bottom: 8px; color: #2563EB;">🍂 Романтика</div>
+          <p style="font-size: 0.9rem; color: #64748B; margin: 0;">Осенняя прогулка, единение с природой и друг с другом.</p>
+        </div>
+      </div>
+
+      <!-- 03.jpg -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        <img src="images1/03.jpg" alt="Свадьба" style="width:100%; height: 300px; object-fit: cover;">
+        <div style="padding: 20px;">
+          <div style="font-weight: bold; margin-bottom: 8px; color: #2563EB;">⛪ Союз</div>
+          <p style="font-size: 0.9rem; color: #64748B; margin: 0;">Традиционное венчание. Сохранение черт лиц в сложной сцене.</p>
+        </div>
+      </div>
+
+      <!-- 04.jpg -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        <img src="images1/04.jpg" alt="Семья" style="width:100%; height: 300px; object-fit: cover;">
+        <div style="padding: 20px;">
+          <div style="font-weight: bold; margin-bottom: 8px; color: #2563EB;">🌸 Семья</div>
+          <p style="font-size: 0.9rem; color: #64748B; margin: 0;">Весенняя прогулка с ребёнком. Новая глава истории.</p>
+        </div>
+      </div>
+
+      <!-- 05.jpg -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        <img src="images1/05.jpg" alt="Традиции" style="width:100%; height: 300px; object-fit: cover;">
+        <div style="padding: 20px;">
+          <div style="font-weight: bold; margin-bottom: 8px; color: #2563EB;">❄️ Эпилог</div>
+          <p style="font-size: 0.9rem; color: #64748B; margin: 0;">Семейный праздник в горах. Связь поколений.</p>
+        </div>
+      </div>
+
+    </div>
+    
+    <!-- Описание услуги -->
+    <div style="margin-top: 50px; text-align: center; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+      <h3 style="margin-bottom: 15px;">Зачем это нужно бизнесу?</h3>
+      <p style="color: #64748B; max-width: 700px; margin: 0 auto;">
+        Я создаю <strong>связные визуальные нарративы</strong> с едиными персонажами, 
+        разными эмоциями и локациями. Идеально для рекламных кампаний, брендов, 
+        свадебных агентств, книг и блогов. Без аренды студий и фотографов.
+      </p>
+    </div>
+  </div>
+</section>
+<!-- Секция: Реставрация фото (12 блоков, сетка 3x4) -->
+<section id="ai-restoration" style="background: #F8FAFC; padding: 80px 0;">
+  <div class="container">
+    <h2 style="text-align: center; margin-bottom: 10px;">🎨 AI-Реставрация фотографий</h2>
+    <p style="text-align: center; color: #64748B; max-width: 600px; margin: 0 auto 40px;">
+      Превращаем старые снимки в живые цветные кадры. Слева — оригинал, справа — результат.
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+      
+      <!-- Блок 1 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-1-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-1-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 2 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-2-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-2-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 3 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-3-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-3-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 4 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-4-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-4-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 5 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-5-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-5-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 6 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-6-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-6-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 7 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-7-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-7-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 8 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-8-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-8-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 9 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-9-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-9-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 10 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-10-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-10-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 11 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-11-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-11-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+      <!-- Блок 12 -->
+      <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <div style="display: flex; gap: 10px;">
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">До</p><img src="images/rest-12-do.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+          <div style="flex: 1;"><p style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 5px; text-align: center;">После</p><img src="images/rest-12-posle.jpg" style="width: 100%; height: 210px; object-fit: cover; border-radius: 8px;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section id="contacts">
+      <div class="container">
+        <h2>Свяжитесь с нами</h2>
+        <p style="color: var(--color-text-light); max-width: 500px; margin: 0 auto;">Готовы обсудить ваш проект? Пишите в удобный мессенджер — отвечаем по возможности быстро.</p>
+        <div class="contact-links">
+          <a href="https://t.me/DEDKOSTYAN" target="_blank" class="contact-btn tg">Telegram</a>
+          <a href="https://vk.com/id89147438" target="_blank" class="contact-btn">ВКонтакте</a>
+          <a href="https://wa.me/79103381361" target="_blank" class="contact-btn">WhatsApp</a>
+          <a href="https://instagram.com/konstantin.696" target="_blank" class="contact-btn">Instagram</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 WebTrio. Все права защищены.</p>
+    </div>
+  </footer>
+</body>
+</html>
