@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пятнашки — WebTrio</title>
+    <style>
+        :root {
+            --color-primary: #2563EB;
+            --color-primary-hover: #1D4ED8;
+            --color-bg: #F8FAFC;
+            --color-white: #FFFFFF;
+            --color-text: #0F172A;
+            --color-text-light: #64748B;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            background: var(--color-bg); 
+            color: var(--color-text);
+            text-align: center;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        header { 
+            background: var(--color-white); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-radius: 12px;
+        }
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: var(--color-primary);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        nav { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+        nav a { 
+            text-decoration: none; 
+            color: var(--color-text);
+            font-weight: 500;
+        }
+        nav a:hover { color: var(--color-primary); }
+        
+        h1 { margin-bottom: 20px; font-size: 1.8rem; }
+        #puzzle {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            gap: 5px;
+            margin: 20px auto;
+            width: max-content;
+        }
+        .tile {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 12px;
+            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .tile:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .empty {
+            background-color: #E2E8F0;
+            cursor: default;
+            box-shadow: none;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        #moves { 
+            margin-top: 20px; 
+            font-size: 1.1rem;
+            color: var(--color-text-light);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 40px;
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover { text-decoration: underline; }
+        
+        @media (max-width: 400px) {
+            #puzzle { grid-template-columns: repeat(4, 65px); }
+            .tile { width: 65px; height: 65px; font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">WebTrio</a>
+        <nav>
+            <a href="index.html#team">Команда</a>
+            <a href="index.html#services">Услуги</a>
+            <a href="index.html#portfolio">Работы</a>
+            <a href="index.html#contacts">Контакты</a>
+            <a href="puzzle.html">Игра</a>
+        </nav>
+    </header>
+
+    <h1>🎮 Игра "Пятнашки"</h1>
+    <div id="puzzle"></div>
+    <button id="shuffle">Перемешать</button>
+    <button id="solve">Решить автоматически</button>
+    <p id="moves">Ходов: 0</p>
+    
+    <a href="index.html" class="back-link">← Вернуться на главную</a>
+
+    <script>
+        const puzzle = document.getElementById('puzzle');
+        const shuffleBtn = document.getElementById('shuffle');
+        const solveBtn = document.getElementById('solve');
+        const movesDisplay = document.getElementById('moves');
+        let tiles = [];
+        let moves = 0;
+        let isSolving = false;
+
+        function initGame() {
+            puzzle.innerHTML = '';
+            tiles = [];
+            moves = 0;
+            movesDisplay.textContent = `Ходов: ${moves}`;
+
+            for (let i = 0; i < 15; i++) {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.textContent = i + 1;
+                tile.onclick = () => moveTile(i);
+                puzzle.appendChild(tile);
+                tiles.push(tile);
+            }
+
+            const empty = document.createElement('div');
+            empty.className = 'tile empty';
+            puzzle.appendChild(empty);
+            tiles.push(empty);
+        }
+
+        function shuffle() {
+            if (isSolving) return;
+            let attempts = 0;
+            let isSolvable = false;
+
+            while (!isSolvable && attempts < 100) {
+                for (let i = 0; i < 1000; i++) {
+                    const randomTile = Math.floor(Math.random() * 15);
+                    const emptyPos = tiles.findIndex(t => t.classList.contains('empty'));
+                    if (isAdjacent(randomTile, emptyPos)) swapTiles(randomTile, emptyPos);
+                }
+                isSolvable = checkSolvability();
+                attempts++;
+            }
+
+            if (!isSolvable) {
+                alert("Не удалось сгенерировать решаемую позицию. Попробуйте ещё раз.");
+                initGame();
+            } else {
+                moves = 0;
+                movesDisplay.textContent = `Ходов: ${moves}`;
+            }
+        }
+
+        function checkSolvability() {
+            let inversions = 0;
+            const flatTiles = tiles.flatMap(t => t.classList.contains('empty') ? 16 : parseInt(t.textContent || 16));
+            const filtered = flatTiles.filter(n => n !== 16);
+
+            for (let i = 0; i < filtered.length; i++) {
+                for (let j = i + 1; j < filtered.length; j++) {
+                    if (filtered[i] > filtered[j]) inversions++;
+                }
+            }
+
+            const emptyRow = Math.floor(tiles.findIndex(t => t.classList.contains('empty')) / 4) + 1;
+            return (inversions + emptyRow) % 2 === 0;
+        }
+
+        function moveTile(index) {
+            if (isSolving) return;
+            const emptyPos = tiles.findIndex(t => t.classList.contains('empty'));
+            if (isAdjacent(index, emptyPos)) {
+                swapTiles(index, emptyPos);
+                moves++;
+                movesDisplay.textContent = `Ходов: ${moves}`;
+                if (checkWin()) setTimeout(() => alert(`Поздравляем! Вы решили головоломку за ${moves} ходов!`), 100);
+            }
+        }
+
+        function isAdjacent(a, b) {
+            const aRow = Math.floor(a / 4), aCol = a % 4;
+            const bRow = Math.floor(b / 4), bCol = b % 4;
+            return Math.abs(aRow - bRow) + Math.abs(aCol - bCol) === 1;
+        }
+
+        function swapTiles(a, b) {
+            const temp = tiles[a].textContent;
+            tiles[a].textContent = tiles[b].textContent;
+            tiles[b].textContent = temp;
+            tiles[a].classList.toggle('empty');
+            tiles[b].classList.toggle('empty');
+        }
+
+        function checkWin() {
+            for (let i = 0; i < 15; i++) {
+                if (parseInt(tiles[i].textContent) !== i + 1) return false;
+            }
+            return true;
+        }
+
+        async function solve() {
+            if (isSolving) return;
+            isSolving = true;
+            while (!checkWin()) {
+                const emptyPos = tiles.findIndex(t => t.classList.contains('empty'));
+                const targetTile = tiles.findIndex(t => parseInt(t.textContent) === emptyPos + 1);
+
+                if (targetTile !== -1 && isAdjacent(targetTile, emptyPos)) {
+                    swapTiles(targetTile, emptyPos);
+                } else {
+                    const adjacentTiles = [];
+                    if (emptyPos % 4 > 0) adjacentTiles.push(emptyPos - 1);
+                    if (emptyPos % 4 < 3) adjacentTiles.push(emptyPos + 1);
+                    if (emptyPos >= 4) adjacentTiles.push(emptyPos - 4);
+                    if (emptyPos < 12) adjacentTiles.push(emptyPos + 4);
+                    const randomTile = adjacentTiles[Math.floor(Math.random() * adjacentTiles.length)];
+                    swapTiles(randomTile, emptyPos);
+                }
+                moves++;
+                movesDisplay.textContent = `Ходов: ${moves}`;
+                await new Promise(resolve => setTimeout(resolve, 150));
+            }
+            isSolving = false;
+            alert(`Головоломка решена автоматически за ${moves} ходов!`);
+        }
+
+        shuffleBtn.onclick = shuffle;
+        solveBtn.onclick = solve;
+        initGame();
+    </script>
+</body>
+</html>
