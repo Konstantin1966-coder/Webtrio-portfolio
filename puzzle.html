@@ -146,13 +146,17 @@
                 const tile = document.createElement('div');
                 tile.className = 'tile';
                 tile.textContent = i + 1;
+                // Добавляем клик для каждой цифры
                 tile.onclick = () => moveTile(i);
                 puzzle.appendChild(tile);
                 tiles.push(tile);
             }
 
+            // Создаем пустую клетку
             const empty = document.createElement('div');
             empty.className = 'tile empty';
+            // ВОТ ИСПРАВЛЕНИЕ: добавляем клик и для пустой клетки
+            empty.onclick = () => moveTile(15); 
             puzzle.appendChild(empty);
             tiles.push(empty);
         }
@@ -199,11 +203,16 @@
         function moveTile(index) {
             if (isSolving) return;
             const emptyPos = tiles.findIndex(t => t.classList.contains('empty'));
+            
+            // Проверяем соседство
             if (isAdjacent(index, emptyPos)) {
                 swapTiles(index, emptyPos);
                 moves++;
                 movesDisplay.textContent = `Ходов: ${moves}`;
-                if (checkWin()) setTimeout(() => alert(`Поздравляем! Вы решили головоломку за ${moves} ходов!`), 100);
+                
+                if (checkWin()) {
+                    setTimeout(() => alert(`Поздравляем! Вы решили головоломку за ${moves} ходов!`), 100);
+                }
             }
         }
 
@@ -231,7 +240,12 @@
         async function solve() {
             if (isSolving) return;
             isSolving = true;
-            while (!checkWin()) {
+            
+            // Защита от бесконечного цикла (на случай если алгоритм застрянет)
+            let safetyCounter = 0;
+            const maxSteps = 5000; 
+
+            while (!checkWin() && safetyCounter < maxSteps) {
                 const emptyPos = tiles.findIndex(t => t.classList.contains('empty'));
                 const targetTile = tiles.findIndex(t => parseInt(t.textContent) === emptyPos + 1);
 
@@ -243,15 +257,24 @@
                     if (emptyPos % 4 < 3) adjacentTiles.push(emptyPos + 1);
                     if (emptyPos >= 4) adjacentTiles.push(emptyPos - 4);
                     if (emptyPos < 12) adjacentTiles.push(emptyPos + 4);
+                    
+                    // Предпочитаем двигать ту, что ближе к цели, иначе случайную
                     const randomTile = adjacentTiles[Math.floor(Math.random() * adjacentTiles.length)];
                     swapTiles(randomTile, emptyPos);
                 }
                 moves++;
                 movesDisplay.textContent = `Ходов: ${moves}`;
-                await new Promise(resolve => setTimeout(resolve, 150));
+                await new Promise(resolve => setTimeout(resolve, 50)); // Ускорил анимацию
+                safetyCounter++;
             }
+            
             isSolving = false;
-            alert(`Головоломка решена автоматически за ${moves} ходов!`);
+            if (checkWin()) {
+                alert(`Головоломка решена автоматически за ${moves} ходов!`);
+            } else {
+                // Если бот не смог решить (такое бывает при рандомных ходах)
+                alert("Бот немного запутался. Попробуй перемешать и решить сам!");
+            }
         }
 
         shuffleBtn.onclick = shuffle;
