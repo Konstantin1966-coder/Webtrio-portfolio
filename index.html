@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta name="yandex-verification" content="8e0e47aff74e2b13" />
+  <meta name="yandex-verification" content="f81c2c4861e4aa4f" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebTrio — Разработка для бизнеса</title>
@@ -30,11 +30,66 @@
     .btn { display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #2563EB, #4F46E5); color: white; border-radius: var(--radius); font-weight: 500; transition: 0.2s; }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3); }
 
-    header { background: var(--color-white); box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-    nav { display: flex; justify-content: space-between; align-items: center; height: 70px; }
-    .logo { font-size: 1.5rem; font-weight: 700; color: var(--color-primary); }
-    .nav-links { display: flex; gap: 24px; }
-    .nav-links a:hover { color: var(--color-primary); }
+  /* Стили для header */
+  header { 
+    background: var(--color-white); 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+    margin-bottom: 40px;
+    padding: 20px 10px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo { 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  nav { 
+    display: flex; 
+    justify-content: center; 
+    gap: 16px; 
+    flex-wrap: wrap;
+  }
+
+  nav a { 
+    text-decoration: none; 
+    color: var(--color-text);
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  nav a:hover { 
+    color: var(--color-primary); 
+  }
+
+  /* Для мобильных */
+  @media (max-width: 600px) {
+    header {
+        padding: 15px 10px;
+    }
+    
+    .logo {
+        font-size: 1.3rem;
+    }
+    
+    nav {
+        gap: 12px;
+    }
+    
+    nav a {
+        font-size: 0.9rem;
+    }
+    
+    .nav-secondary {
+        margin-top: 5px;
+    }
+}
 
     /* Hero - НОВЫЙ: Тёмный фон с нейросетью */
 #hero { 
@@ -85,21 +140,20 @@
 </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <nav>
-        <a href="#" class="logo">WebTrio</a>
-        <ul class="nav-links">
-          <li><a href="#team">Команда</a></li>
-          <li><a href="#services">Услуги</a></li>
-          <li><a href="#portfolio">Работы</a></li>
-          <li><a href="#contacts">Контакты</a></li>
-          <li><a href="puzzle.html">Игра</a>
-      
-        </ul>
-      </nav>
-    </div>
-  </header>
+ <header>
+    <a href="index.html" class="logo">WebTrio</a>
+    
+    <nav class="nav-main">
+        <a href="index.html#team">Команда</a>
+        <a href="index.html#services">Услуги</a>
+        <a href="index.html#portfolio">Работы</a>
+    </nav>
+    
+    <nav class="nav-secondary">
+        <a href="index.html#contacts">Контакты</a>
+        <a href="puzzle.html">Игра</a>
+    </nav>
+</header>
 
   <main>
     <section id="hero">
