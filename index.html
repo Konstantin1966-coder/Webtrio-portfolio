@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <!-- Фавиконка -->
+<!-- Фавиконка -->
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="shortcut icon" href="favicon.png" type="image/png">
   <meta name="yandex-verification" content="f81c2c4861e4aa4f" />
@@ -31,7 +31,13 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family: var(--font-main); color: var(--color-text); line-height: 1.6; background: var(--color-bg); }
+   body { 
+    font-family: var(--font-main); 
+    color: var(--color-text); 
+    line-height: 1.6;
+    background: linear-gradient(135deg, #ff0000 0%, #cc0000 50%, #800000 100%);
+    min-height: 100vh;
+}
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -181,7 +187,31 @@ nav a:hover {
         font-size: 1.1rem;
     }
 }
-</style>
+/* Делаем красный фон единым слоем */
+body { 
+    background: radial-gradient(ellipse at center, #FFFFFF 0%, #F8FAFC 40%, #E0E7FF 70%, #C7D2FE 100%);
+}
+
+/* Убираем белый фон у секций, чтобы красный просвечивал */
+header, section, #contacts, .container {
+    background: transparent !important;
+}
+
+/* Оставляем фон только у карточек и hero */
+.team-card, .service-card, .portfolio-card {
+    background: var(--color-white) !important;
+}
+
+#hero {
+    background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.9)), url('images/hero-bg.jpg') !important;
+    background-size: cover;
+    background-position: center;
+}
+
+footer {
+    background: #0F172A !important;
+    color: #94A3B8 !important;
+}</style>
 
 </head>
 <body>
@@ -313,12 +343,20 @@ nav a:hover {
         </div>
             </div> <!-- конец карточки VK Тесты -->
         
-        <!-- Карточка 4: Инфографика + Видео -->
-<div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
-  <h3 style="margin-bottom: 15px; font-size: 1.1rem;">🎨 Инфографика для маркетплейсов</h3>
-  <p style="color: #64748B; font-size: 0.9rem; margin-bottom: 15px;">Velocifero JUMP — электромотоцикл</p>
+<!-- Карточка 4: Инфографика + Видео -->
+<div style="
+    background: radial-gradient(ellipse at center, #FFFFFF 0%, #F8FAFC 40%, #E0E7FF 70%, #C7D2FE 100%); 
+    color: #000000; 
+    padding: 25px; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    max-width: 850px; 
+    margin: 150px auto -45px auto;
+">
+  <h3 style="margin-bottom: 15px; font-size: 1.2rem; color: #000000; text-align: center;">🎨 Инфографика для маркетплейсов</h3>
+  <p style="color: #333333; font-size: 0.95rem; margin-bottom: 20px; text-align: center;">Velocifero JUMP — электромотоцикл</p>
 
-  <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
     <!-- Видео -->
     <div style="flex: 1 1 300px; min-width: 0;">
       <video controls style="width: 100%; height: auto; border-radius: 8px; display: block;">
@@ -331,9 +369,9 @@ nav a:hover {
     </div>
   </div>
 
-  <p style="font-size: 0.85rem; color: #94A3B8;">
+  <p style="font-size: 0.9rem; color: #000000; text-align: center; margin-top: 20px; font-weight: 500;">
     📹 360° презентация продукта<br>
-    🎯 Rich-контент для Wildberries/Ozon
+     Rich-контент для Wildberries/Ozon
   </p>
 </div>
 
@@ -344,8 +382,9 @@ nav a:hover {
 <!-- Секция: Открытки к 9 Мая -->
 <section id="victory" style="padding: 60px 0; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
   <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-    <h2 style="text-align: center; color: white; margin-bottom: 40px; font-size: 2rem;">🎖️ Память и Слава</h2>
-    <p style="text-align: center; color: #94A3B8; margin-bottom: 30px; font-size: 1.1rem;">Открытки к 9 Мая 2026</p>
+    
+    
+<h2>Открытки к праздникам и не только</h2>
     
     <!-- Слайдер -->
     <div style="display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 20px 0; scrollbar-width: thin; scrollbar-color: #F59E0B #1e293b;">
