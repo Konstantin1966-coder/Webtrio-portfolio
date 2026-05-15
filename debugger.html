@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Debugger - Coffee Edition</title>
+    <style>
+        :root {
+            --term-green: #00ff41;
+            --bg-dark: #0d0d0d;
+            --crt-glow: 0 0 10px rgba(0, 255, 65, 0.5);
+            --coffee-color: #00d4ff;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--term-green);
+        }
+
+        #game-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background-color: var(--bg-dark);
+            border: 4px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Эффект сканирующих линий */
+        #game-container::before {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            z-index: 10;
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        #header {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 30px;
+            font-size: 20px;
+            text-shadow: var(--crt-glow);
+        }
+
+        #dev {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            font-size: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            transition: transform 0.05s;
+        }
+
+        .pos-tl { top: 80px; left: 140px; transform: scaleX(-1); }
+        .pos-bl { top: 220px; left: 140px; transform: scaleX(-1); }
+        .pos-tr { top: 80px; right: 140px; }
+        .pos-br { top: 220px; right: 140px; }
+
+        .port {
+            position: absolute;
+            width: 100px;
+            height: 4px;
+            background: #222;
+            box-shadow: 0 0 5px var(--term-green);
+        }
+        .port-tl { top: 110px; left: 0; transform: rotate(15deg); }
+        .port-bl { top: 250px; left: 0; transform: rotate(15deg); }
+        .port-tr { top: 110px; right: 0; transform: rotate(-15deg); }
+        .port-br { top: 250px; right: 0; transform: rotate(-15deg); }
+
+        .entity {
+            position: absolute;
+            font-size: 28px;
+            z-index: 4;
+        }
+        .bug { filter: drop-shadow(0 0 8px red); }
+        .coffee { filter: drop-shadow(0 0 10px var(--coffee-color)); }
+
+        .controls {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .btn {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(0,255,65,0.1);
+            border-radius: 50%;
+            pointer-events: auto;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #444;
+        }
+        .btn:active { background: rgba(0,255,65,0.2); color: var(--term-green); }
+        .btn-tl { top: 60px; left: 15px; }
+        .btn-bl { bottom: 60px; left: 15px; }
+        .btn-tr { top: 60px; right: 15px; }
+        .btn-br { bottom: 60px; right: 15px; }
+
+        #overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            display: none;
+            text-align: center;
+        }
+
+        button {
+            background: none;
+            border: 2px solid var(--term-green);
+            color: var(--term-green);
+            padding: 12px 25px;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        button:hover { background: var(--term-green); color: black; }
+
+        #notification {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="margin-bottom: 10px;"><b>The Debugger: Coffee Edition</b></div>
+
+    <div id="game-container">
+        <div id="header">
+            <div>BUGS_FIXED: <span id="score">000</span></div>
+            <div>STABILITY: <span id="lives">|||</span></div>
+        </div>
+
+        <div class="port port-tl"></div>
+        <div class="port port-bl"></div>
+        <div class="port port-tr"></div>
+        <div class="port port-br"></div>
+
+        <div id="dev" class="pos-br">👨‍💻</div>
+
+        <div class="controls">
+            <div class="btn btn-tl" onmousedown="moveDev('tl')">Q</div>
+            <div class="btn btn-bl" onmousedown="moveDev('bl')">A</div>
+            <div class="btn btn-tr" onmousedown="moveDev('tr')">P</div>
+            <div class="btn btn-br" onmousedown="moveDev('br')">L</div>
+        </div>
+
+        <div id="notification">SYSTEM RECOVERED +1</div>
+
+        <div id="overlay">
+            <h1 style="color: #ff0000; letter-spacing: 5px;">FATAL ERROR</h1>
+            <p id="cause">Stack Overflow: Too many bugs</p>
+            <p>TOTAL_COMMITS: <span id="final-score">0</span></p>
+            <button onclick="resetGame()">RELOAD ENVIRONMENT</button>
+        </div>
+    </div>
+
+    <script>
+        const dev = document.getElementById('dev');
+        const scoreDisplay = document.getElementById('score');
+        const livesDisplay = document.getElementById('lives');
+        const overlay = document.getElementById('overlay');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const notification = document.getElementById('notification');
+        
+        let score = 0;
+        let lives = 3;
+        let currentPos = 'br';
+        let gameActive = true;
+        let speed = 2200;
+        let spawnRate = 1900;
+        let spawnLoop;
+
+        function moveDev(pos) {
+            if (!gameActive) return;
+            dev.className = 'pos-' + pos;
+            currentPos = pos;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            if (key === 'q') moveDev('tl');
+            if (key === 'a') moveDev('bl');
+            if (key === 'p') moveDev('tr');
+            if (key === 'l') moveDev('br');
+            
+            if (e.code === 'ArrowUp') currentPos.includes('r') ? moveDev('tr') : moveDev('tl');
+            if (e.code === 'ArrowDown') currentPos.includes('r') ? moveDev('br') : moveDev('bl');
+            if (e.code === 'ArrowLeft') currentPos.includes('t') ? moveDev('tl') : moveDev('bl');
+            if (e.code === 'ArrowRight') currentPos.includes('t') ? moveDev('tr') : moveDev('br');
+        });
+
+        function spawnEntity() {
+            if (!gameActive) return;
+
+            const isCoffee = Math.random() < 0.15; // 15% шанс на кофе
+            const ports = ['tl', 'bl', 'tr', 'br'];
+            const startPos = ports[Math.floor(Math.random() * ports.length)];
+            
+            const entity = document.createElement('div');
+            entity.className = 'entity ' + (isCoffee ? 'coffee' : 'bug');
+            entity.innerHTML = isCoffee ? '☕️' : '🪲';
+            document.getElementById('game-container').appendChild(entity);
+
+            let step = 0;
+            const totalSteps = 6;
+            
+            const moveInterval = setInterval(() => {
+                step++;
+                const offset = step * 25;
+                const topOffset = step * 8;
+
+                if (startPos === 'tl') {
+                    entity.style.left = offset + 'px';
+                    entity.style.top = (110 + topOffset) + 'px';
+                } else if (startPos === 'bl') {
+                    entity.style.left = offset + 'px';
+                    entity.style.top = (250 + topOffset) + 'px';
+                } else if (startPos === 'tr') {
+                    entity.style.right = offset + 'px';
+                    entity.style.top = (110 + topOffset) + 'px';
+                } else if (startPos === 'br') {
+                    entity.style.right = offset + 'px';
+                    entity.style.top = (250 + topOffset) + 'px';
+                }
+
+                if (step === totalSteps) {
+                    clearInterval(moveInterval);
+                    checkCollision(startPos, entity, isCoffee);
+                }
+            }, speed / totalSteps);
+        }
+
+        function checkCollision(pos, element, isCoffee) {
+            if (currentPos === pos) {
+                if (isCoffee) {
+                    if (lives < 3) {
+                        lives++;
+                        showNotification("COFFEE BOOST: STABILITY +1");
+                    } else {
+                        score += 5; // Бонус к очкам если жизни полные
+                        showNotification("ADRENALINE: +5 BUGS FIXED");
+                    }
+                    updateLives();
+                } else {
+                    score++;
+                }
+                scoreDisplay.innerText = score.toString().padStart(3, '0');
+                
+                // Прогрессия сложности
+                if (score > 0 && score % 10 === 0) {
+                    speed *= 0.95;
+                    spawnRate *= 0.95;
+                    updateLoops();
+                }
+            } else {
+                if (!isCoffee) { // Кофе не отнимает жизнь, если упал
+                    lives--;
+                    updateLives();
+                    if (lives <= 0) gameOver();
+                }
+            }
+            element.remove();
+        }
+
+        function showNotification(text) {
+            notification.innerText = text;
+            notification.style.opacity = '1';
+            setTimeout(() => notification.style.opacity = '0', 1500);
+        }
+
+        function updateLives() {
+            livesDisplay.innerText = '|'.repeat(lives);
+            livesDisplay.style.color = lives === 1 ? '#ff0000' : 'var(--term-green)';
+        }
+
+        function gameOver() {
+            gameActive = false;
+            clearInterval(spawnLoop);
+            finalScoreDisplay.innerText = score;
+            overlay.style.display = 'flex';
+        }
+
+        function updateLoops() {
+            clearInterval(spawnLoop);
+            spawnLoop = setInterval(spawnEntity, spawnRate);
+        }
+
+        function resetGame() {
+            score = 0;
+            lives = 3;
+            speed = 2200;
+            spawnRate = 1900;
+            gameActive = true;
+            scoreDisplay.innerText = '000';
+            updateLives();
+            overlay.style.display = 'none';
+            updateLoops();
+        }
+
+        spawnLoop = setInterval(spawnEntity, spawnRate);
+    </script>
+</body>
+</html>
