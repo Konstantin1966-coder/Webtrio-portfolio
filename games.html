@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игры — WebTrio</title>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --accent: #2563EB;
+            --accent-hover: #1d4ed8;
+        }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+        .header p {
+            color: #94a3b8;
+            margin: 0;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 900px;
+            width: 100%;
+        }
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            border-color: var(--accent);
+        }
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        .game-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.4rem;
+        }
+        .game-card p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin: 0 0 20px 0;
+            min-height: 40px;
+        }
+        .play-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .play-btn:hover {
+            background: var(--accent-hover);
+        }
+        .back-link {
+            margin-top: 40px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .back-link:hover {
+            color: var(--accent);
+        }
+        @media (max-width: 600px) {
+            .header h1 { font-size: 2rem; }
+            .games-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎮 Игры от WebTrio</h1>
+        <p>Выбери, во что поиграть</p>
+    </div>
+
+    <div class="games-grid">
+        <!-- Пятнашки -->
+        <div class="game-card">
+            <div class="game-icon">🧩</div>
+            <h3>Пятнашки</h3>
+            <p>Классическая логическая игра. Собери картинку, передвигая фишки.</p>
+            <a href="puzzle.html" class="play-btn">Играть</a>
+        </div>
+
+        <!-- Debugger -->
+        <div class="game-card">
+            <div class="game-icon">🪲</div>
+            <h3>The Debugger</h3>
+            <p>Лови баги, пей кофе, спасай продакшн. Терминальный экшен.</p>
+            <a href="debugger.html" class="play-btn">Играть</a>
+        </div>
+    </div>
+
+    <a href="index.html" class="back-link">← Вернуться на сайт</a>
+</body>
+</html>
