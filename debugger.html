@@ -2,9 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="favicon.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Debugger - Fixed Audio Button</title>
+    <title>The Debugger - Ultimate Edition</title>
     <style>
         :root {
             --term-green: #00ff41;
@@ -356,7 +355,7 @@
             text-shadow: var(--crt-glow);
         }
 
-        /* Мобильные адаптивные стили */
+        /* Умная адаптация под мобильные экраны */
         @media (max-width: 768px) {
             #game-container {
                 width: 100vw;
@@ -387,12 +386,8 @@
     </style>
 </head>
 <body>
-    <!-- Кнопка выхода -->
-<div style="position:fixed; top:20px; left:20px; z-index:100000; transform:translateZ(0);">
-    <a href="index.html" style="background:#000; color:#0f0; padding:10px 15px; border:2px solid #0f0; text-decoration:none; font-family:monospace; display:block;">← НА САЙТ</a>
-</div>
 
-    <div class="game-title">The Debugger: Audio Edition</div>
+    <div class="game-title">The Debugger: Ultimate Edition</div>
 
     <div id="game-wrapper">
         <div id="game-container">
@@ -557,8 +552,8 @@
             audioToggleBtn.style.borderColor = isMuted ? "#444" : "var(--term-green)";
         }
 
-        if(localStorage.getItem('debugger_binds_v9')) {
-            keyBinds = JSON.parse(localStorage.getItem('debugger_binds_v9'));
+        if(localStorage.getItem('debugger_binds_ultimate')) {
+            keyBinds = JSON.parse(localStorage.getItem('debugger_binds_ultimate'));
         }
 
         function startGame() {
@@ -626,7 +621,7 @@
                     if (keyBinds[k] === bindingTarget) delete keyBinds[k];
                 }
                 keyBinds[pressedKey] = bindingTarget;
-                localStorage.setItem('debugger_binds_v9', JSON.stringify(keyBinds));
+                localStorage.setItem('debugger_binds_ultimate', JSON.stringify(keyBinds));
                 bindingTarget = null;
                 updateBindButtonsText();
                 return;
@@ -714,22 +709,6 @@
             entity.className = 'entity';
             entity.innerHTML = isCoffee ? '<div class="coffee-sprite">☕️</div>' : '<div class="bug-sprite"></div>';
             gameContainer.appendChild(entity);
-
-            if (startPos === 'tl') {
-               entity.style.left = '0px';
-               entity.style.top = '106px';  // startY_Top
-    }          else if (startPos === 'bl') {
-               entity.style.left = '0px';
-               entity.style.top = '266px';  // startY_Bot
-    }          else if (startPos === 'tr') {
-               entity.style.right = '0px';
-               entity.style.top = '106px';
-               entity.style.transform = 'scaleX(-1)';
-     }         else if (startPos === 'br') {
-               entity.style.right = '0px';
-               entity.style.top = '266px';
-               entity.style.transform = 'scaleX(-1)';
-     }
 
             const endX = 145; 
             const startY_Top = 130 - 24; 
