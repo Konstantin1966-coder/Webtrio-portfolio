@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <!-- Фавиконка -->
-<link rel="icon" href="favicon.png" type="image/png">
-<link rel="shortcut icon" href="favicon.png" type="image/png">
     <meta charset="UTF-8">
-    <link rel="icon" href="favicon.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.png?v=1" type="image/png">
     <title>Пятнашки — WebTrio</title>
     <style>
         :root {
@@ -26,67 +23,45 @@
             padding: 20px;
             line-height: 1.5;
         }
-/* Стили для header */
-header { 
-    background: var(--color-white); 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-    margin-bottom: 40px;
-    padding: 20px 10px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo { 
-    font-size: 1.5rem; 
-    font-weight: 700; 
-    color: var(--color-primary);
-    text-decoration: none;
-}
-
-nav { 
-    display: flex; 
-    justify-content: center; 
-    gap: 16px; 
-    flex-wrap: wrap;
-}
-
-nav a { 
-    text-decoration: none; 
-    color: var(--color-text);
-    font-weight: 500;
-    font-size: 0.95rem;
-}
-
-nav a:hover { 
-    color: var(--color-primary); 
-}
-
-/* Для мобильных */
-@media (max-width: 600px) {
-    header {
-        padding: 15px 10px;
-    }
-    
-    .logo {
-        font-size: 1.3rem;
-    }
-    
-    nav {
-        gap: 12px;
-    }
-    
-    nav a {
-        font-size: 0.9rem;
-    }
-    
-    .nav-secondary {
-        margin-top: 5px;
-    }
-}
-        
+        header { 
+            background: var(--color-white); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+            margin-bottom: 40px;
+            padding: 20px 10px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        nav { 
+            display: flex; 
+            justify-content: center; 
+            gap: 16px; 
+            flex-wrap: wrap;
+        }
+        nav a { 
+            text-decoration: none; 
+            color: var(--color-text);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        nav a:hover { 
+            color: var(--color-primary); 
+        }
+        @media (max-width: 600px) {
+            header { padding: 15px 10px; }
+            .logo { font-size: 1.3rem; }
+            nav { gap: 12px; }
+            nav a { font-size: 0.9rem; }
+            .nav-secondary { margin-top: 5px; }
+        }
         h1 { margin-bottom: 20px; font-size: 1.8rem; }
         #puzzle {
             display: grid;
@@ -134,6 +109,15 @@ nav a:hover {
             font-size: 1.1rem;
             color: var(--color-text-light);
         }
+        #game-stats {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--color-text-light);
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            display: inline-block;
+        }
         .back-link {
             display: inline-block;
             margin-top: 40px;
@@ -142,7 +126,6 @@ nav a:hover {
             font-weight: 500;
         }
         .back-link:hover { text-decoration: underline; }
-        
         @media (max-width: 400px) {
             #puzzle { grid-template-columns: repeat(4, 65px); }
             .tile { width: 65px; height: 65px; font-size: 20px; }
@@ -150,38 +133,66 @@ nav a:hover {
     </style>
 </head>
 <body>
-   <header>
-    <a href="index.html" class="logo">WebTrio</a>
-    
-    <nav class="nav-main">
-        <a href="index.html#team">Команда</a>
-        <a href="index.html#services">Услуги</a>
-        <a href="index.html#portfolio">Работы</a>
-    </nav>
-    
-    <nav class="nav-secondary">
-        <a href="index.html#contacts">Контакты</a>
-        <a href="puzzle.html">Игра</a>
-    </nav>
-</header>
+    <header>
+        <a href="index.html" class="logo">WebTrio</a>
+        <nav class="nav-main">
+            <a href="index.html#team">Команда</a>
+            <a href="index.html#services">Услуги</a>
+            <a href="index.html#portfolio">Работы</a>
+        </nav>
+        <nav class="nav-secondary">
+            <a href="index.html#contacts">Контакты</a>
+            <a href="games.html">Игры</a>
+        </nav>
+    </header>
 
     <h1>🎮 Игра "Пятнашки"</h1>
     <div id="puzzle"></div>
     <button id="shuffle">Перемешать</button>
-    
     <p id="moves">Ходов: 0</p>
-    
+    <div id="game-stats"></div>
     <a href="index.html" class="back-link">← Вернуться на главную</a>
 
     <script>
+        // === ИГРОВЫЕ ПЕРЕМЕННЫЕ ===
+        let isGameReady = false;
+        let gameFinished = false;
         const puzzle = document.getElementById('puzzle');
         const shuffleBtn = document.getElementById('shuffle');
-        const solveBtn = document.getElementById('solve');
         const movesDisplay = document.getElementById('moves');
         let tiles = [];
         let moves = 0;
         let isSolving = false;
 
+        // === ИМЯ ИГРОКА ===
+        let playerName = localStorage.getItem('puzzle_name');
+        if (!playerName) {
+            playerName = prompt('Введи имя для таблицы рекордов:') || 'Игрок';
+            localStorage.setItem('puzzle_name', playerName);
+        }
+
+        // === СТАТИСТИКА ===
+        let stats = JSON.parse(localStorage.getItem('puzzle_stats')) || { played: 0, won: 0, abandoned: 0 };
+
+        function updateStatsDisplay() {
+            let statsDiv = document.getElementById('game-stats');
+            if (!statsDiv) {
+                statsDiv = document.createElement('div');
+                statsDiv.id = 'game-stats';
+                statsDiv.style.marginTop = '20px';
+                statsDiv.style.fontSize = '14px';
+                statsDiv.style.color = '#64748B';
+                document.body.appendChild(statsDiv);
+            }
+            statsDiv.innerHTML = `
+                👤 Игрок: <b>${playerName}</b> | 
+                🎮 Начато: ${stats.played} | 
+                🏆 Собрано: ${stats.won} | 
+                🔻 Брошено: ${stats.abandoned}
+            `;
+        }
+
+        // === ИНИЦИАЛИЗАЦИЯ ИГРЫ ===
         function initGame() {
             puzzle.innerHTML = '';
             tiles = [];
@@ -192,23 +203,32 @@ nav a:hover {
                 const tile = document.createElement('div');
                 tile.className = 'tile';
                 tile.textContent = i + 1;
-                // Добавляем клик для каждой цифры
                 tile.onclick = () => moveTile(i);
                 puzzle.appendChild(tile);
                 tiles.push(tile);
             }
 
-            // Создаем пустую клетку
             const empty = document.createElement('div');
             empty.className = 'tile empty';
-            // ВОТ ИСПРАВЛЕНИЕ: добавляем клик и для пустой клетки
-            empty.onclick = () => moveTile(15); 
+            empty.onclick = () => moveTile(15);
             puzzle.appendChild(empty);
             tiles.push(empty);
         }
 
+        // === ПЕРЕМЕШИВАНИЕ ===
         function shuffle() {
             if (isSolving) return;
+
+            // Если игра уже шла, считаем её брошенной
+            if (isGameReady && !gameFinished) {
+                stats.abandoned++;
+            }
+
+            // Фиксируем новую игру
+            stats.played++;
+            localStorage.setItem('puzzle_stats', JSON.stringify(stats));
+            updateStatsDisplay();
+
             let attempts = 0;
             let isSolvable = false;
 
@@ -229,8 +249,11 @@ nav a:hover {
                 moves = 0;
                 movesDisplay.textContent = `Ходов: ${moves}`;
             }
+            isGameReady = true;
+            gameFinished = false;
         }
 
+        // === ПРОВЕРКА РЕШАЕМОСТИ ===
         function checkSolvability() {
             let inversions = 0;
             const flatTiles = tiles.flatMap(t => t.classList.contains('empty') ? 16 : parseInt(t.textContent || 16));
@@ -246,28 +269,36 @@ nav a:hover {
             return (inversions + emptyRow) % 2 === 0;
         }
 
+        // === ХОД ИГРЫ ===
         function moveTile(index) {
-            if (isSolving) return;
+            if (!isGameReady || isSolving || gameFinished) return;
+            
             const emptyPos = tiles.findIndex(t => t.classList.contains('empty'));
             
-            // Проверяем соседство
             if (isAdjacent(index, emptyPos)) {
                 swapTiles(index, emptyPos);
                 moves++;
                 movesDisplay.textContent = `Ходов: ${moves}`;
                 
                 if (checkWin()) {
+                    gameFinished = true;
+                    isGameReady = false;
+                    stats.won++;
+                    localStorage.setItem('puzzle_stats', JSON.stringify(stats));
+                    updateStatsDisplay();
                     setTimeout(() => alert(`Поздравляем! Вы решили головоломку за ${moves} ходов!`), 100);
                 }
             }
         }
 
+        // === ПРОВЕРКА СОСЕДСТВА ===
         function isAdjacent(a, b) {
             const aRow = Math.floor(a / 4), aCol = a % 4;
             const bRow = Math.floor(b / 4), bCol = b % 4;
             return Math.abs(aRow - bRow) + Math.abs(aCol - bCol) === 1;
         }
 
+        // === ОБМЕН ПЛИТОК ===
         function swapTiles(a, b) {
             const temp = tiles[a].textContent;
             tiles[a].textContent = tiles[b].textContent;
@@ -276,6 +307,7 @@ nav a:hover {
             tiles[b].classList.toggle('empty');
         }
 
+        // === ПРОВЕРКА ПОБЕДЫ ===
         function checkWin() {
             for (let i = 0; i < 15; i++) {
                 if (parseInt(tiles[i].textContent) !== i + 1) return false;
@@ -283,49 +315,29 @@ nav a:hover {
             return true;
         }
 
-        async function solve() {
-            if (isSolving) return;
-            isSolving = true;
-            
-            // Защита от бесконечного цикла (на случай если алгоритм застрянет)
-            let safetyCounter = 0;
-            const maxSteps = 5000; 
-
-            while (!checkWin() && safetyCounter < maxSteps) {
-                const emptyPos = tiles.findIndex(t => t.classList.contains('empty'));
-                const targetTile = tiles.findIndex(t => parseInt(t.textContent) === emptyPos + 1);
-
-                if (targetTile !== -1 && isAdjacent(targetTile, emptyPos)) {
-                    swapTiles(targetTile, emptyPos);
-                } else {
-                    const adjacentTiles = [];
-                    if (emptyPos % 4 > 0) adjacentTiles.push(emptyPos - 1);
-                    if (emptyPos % 4 < 3) adjacentTiles.push(emptyPos + 1);
-                    if (emptyPos >= 4) adjacentTiles.push(emptyPos - 4);
-                    if (emptyPos < 12) adjacentTiles.push(emptyPos + 4);
-                    
-                    // Предпочитаем двигать ту, что ближе к цели, иначе случайную
-                    const randomTile = adjacentTiles[Math.floor(Math.random() * adjacentTiles.length)];
-                    swapTiles(randomTile, emptyPos);
-                }
-                moves++;
-                movesDisplay.textContent = `Ходов: ${moves}`;
-                await new Promise(resolve => setTimeout(resolve, 50)); // Ускорил анимацию
-                safetyCounter++;
-            }
-            
-            isSolving = false;
-            if (checkWin()) {
-                alert(`Головоломка решена автоматически за ${moves} ходов!`);
-            } else {
-                // Если бот не смог решить (такое бывает при рандомных ходах)
-                alert("Бот немного запутался. Попробуй перемешать и решить сам!");
-            }
-        }
-
+        // === ЗАПУСК ===
         shuffleBtn.onclick = shuffle;
-        
         initGame();
-    </script>
+        updateStatsDisplay();
+        // === ЛОВИМ КНОПКУ "НАЗАД" ===
+    const backLink = document.querySelector('.back-link');
+    if (backLink) {
+        backLink.addEventListener('click', () => {
+            // Если игра шла и не закончена — считаем брошенной
+            if (isGameReady && !gameFinished) {
+                stats.abandoned++;
+                localStorage.setItem('puzzle_stats', JSON.stringify(stats));
+            }
+        });
+    }
+
+    // === ЛОВИМ ЗАКРЫТИЕ ВКЛАДКИ (Страховка) ===
+    window.addEventListener('beforeunload', () => {
+        if (isGameReady && !gameFinished) {
+            stats.abandoned++;
+            localStorage.setItem('puzzle_stats', JSON.stringify(stats));
+        }
+    });
+</script>
 </body>
 </html>
