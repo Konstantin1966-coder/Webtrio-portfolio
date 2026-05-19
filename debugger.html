@@ -363,27 +363,28 @@
         /* Мобильные адаптивные стили */
         /* Полностью обновленные мобильные адаптивные стили */
         /* Полностью обновленные мобильные адаптивные стили */
+      /* Чистые мобильные стили без багов */
         @media (max-width: 768px) {
             body {
                 overflow-x: hidden; 
                 overflow-y: auto;
                 justify-content: flex-start;
-                padding-top: 30px; /* Уменьшили отступ сверху, так как кнопки там больше нет */
+                padding-top: 10px; 
             }
 
-             .game-title {
+            .game-title {
                 font-size: 18px;
-                margin-bottom: 5px;
+                margin-bottom: 10px;
             }
 
             #game-wrapper {
                 padding: 0;
                 background: none;
                 box-shadow: none;
-                /* ИСПРАВЛЕНО: Теперь тут чистый CSS, который поймет любой телефон */
-                transform: scale(calc(100vw / 740)); 
+                /* Чистый масштаб, чтобы интерфейс и счётчики не сжимались в ноль */
+                transform: scale(calc(100vw / 750)); 
                 transform-origin: top center;
-                margin-bottom: -130px; 
+                margin-bottom: 20px; /* Заменили огромный минус на нормальный отступ */
             }
 
             #game-container {
@@ -402,13 +403,13 @@
             * {
                 touch-action: manipulation;
             }
-        } /* Конец мобильных стилей */
+        } /* Конец мобильного блока */
 
-        /* Единый стиль кнопки для ПК и мобилок (Вне мобильного блока) */
+        /* Единая кнопка «Назад» в самом низу страницы для всех устройств */
         .back-btn-container {
             display: flex;
             justify-content: center;
-            margin: 20px auto; 
+            margin: 30px auto; 
             width: 100%;
             clear: both;
         }
@@ -431,13 +432,9 @@
             color: #000;
             box-shadow: 0 0 15px #0f0;
         }
-    </style>
-</head>
+    </style> <head>
 <body>
 
-<div class="back-btn-container">
-    <a href="index.html">← НА САЙТ</a>
-</div>
     <div class="game-title">The Debugger: Audio Edition</div>
 
     <div id="game-wrapper">
@@ -503,7 +500,8 @@
                 
                 <button class="menu-btn" onclick="closeSettings()">SAVE & BACK</button>
             </div>
-        </div>
+        </div> </div> <div class="back-btn-container">
+        <a href="index.html">← НА САЙТ</a>
     </div>
 
     <script>
@@ -849,7 +847,7 @@
             activeEntities = activeEntities.filter(id => id !== intervalId);
         }
 
-        function collectEntity(pos, isCoffee) {
+      function collectEntity(pos, isCoffee) {
             if (lives <= 0) return;
             if (isCoffee) {
                 playSound('coffee'); 
@@ -858,18 +856,22 @@
                     showNotification("COFFEE BOOST: STABILITY +1");
                     createPopText("+1 HP", pos, "var(--coffee-color)");
                 } else {
-                    score += 5;
-                    showNotification("ADRENALINE: +5 BUGS FIXED");
-                    createPopText("+5", pos, "var(--coffee-color)");
+                    /* Правильно прибавляем дробь через точку */
+                    score += 1;
+                    showNotification("ADRENALINE: +1 BUGS FIXED");
+                    createPopText("+1", pos, "var(--coffee-color)");
                 }
                 updateLives();
             } else {
                 playSound('hit'); 
-                score++;
-                createPopText("+1", pos, "var(--term-green)");
+                score+=2;
+                createPopText("+2", pos, "var(--term-green)");
             }
+            
+            /* Выводим счётчик в красивом ретро-формате с нулями */
             scoreDisplay.innerText = score.toString().padStart(3, '0');
             
+            /* Усложняем игру каждые 10 баллов */
             if (score > 0 && score % 10 === 0) {
                 speed *= 0.91;
                 spawnRate *= 0.91;
