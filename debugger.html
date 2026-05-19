@@ -357,32 +357,51 @@
         }
 
         /* Мобильные адаптивные стили */
+        /* Полностью обновленные мобильные адаптивные стили */
         @media (max-width: 768px) {
-            #game-container {
-                width: 100vw;
-                height: 100vh;
-                max-width: 100%;
-                max-height: 100%;
-                border: none;
-                border-radius: 0;
+            body {
+                /* Разрешаем скролл, если экран совсем крошечный, но скрываем боковой */
+                overflow-x: hidden; 
+                overflow-y: auto;
+                justify-content: flex-start;
+                padding-top: 60px; /* Место под верхнюю кнопку "НА САЙТ" */
             }
+
+            .game-title {
+                font-size: 18px;
+                margin-bottom: 5px;
+            }
+
             #game-wrapper {
                 padding: 0;
                 background: none;
                 box-shadow: none;
+                
+                /* Включаем CSS-трансформацию масштаба на основе ширины экрана мобильного */
+                transform: scale(calc(window.innerWidth / 740)); /* 740 - это 700px игры + отступы */
+                transform-origin: top center; /* Сжимаем относительно верхнего центра */
+                margin-bottom: -150px; /* Компенсируем пустое место после сжатия */
             }
-            .game-title { display: none; }
-            .btn { width: 80px; height: 80px; }
-            .btn-tl { top: 22%; left: 15px; }
-            .btn-bl { bottom: 22%; top: auto; left: 15px; }
-            .btn-tr { top: 22%; right: 15px; }
-            .btn-br { bottom: 22%; top: auto; right: 15px; }
-            #dev.pos-tl { left: 25%; top: 27%; }
-            #dev.pos-bl { left: 25%; bottom: 27%; top: auto; }
-            #dev.pos-tr { right: 25%; top: 27%; }
-            #dev.pos-br { right: 25%; bottom: 27%; top: auto; }
-            #header { padding: 15px 15px; font-size: 16px; }
-            #audio-toggle { padding: 3px 10px; font-size: 14px; }
+
+            /* Сам контейнер НЕ трогаем, он должен оставаться 700х450 внутри системы координат */
+            #game-container {
+                border: 2px solid #333;
+                border-radius: 12px;
+                box-shadow: var(--crt-glow);
+            }
+
+            /* Делаем кнопки управления более отзывчивыми на смартфонах */
+            .btn {
+                width: 75px;
+                height: 75px;
+                background: rgba(0, 255, 65, 0.08); /* Чуть заметнее на мобильном */
+                border-color: rgba(0, 255, 65, 0.3);
+            }
+
+            /* Чтобы не мешал системный зум при частых тапах */
+            * {
+                touch-action: manipulation;
+            }
         }
     </style>
 </head>
