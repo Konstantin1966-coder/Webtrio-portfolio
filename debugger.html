@@ -344,12 +344,7 @@
         }
         @keyframes pulse { 0%{opacity:0.5;} 50%{opacity:1;} 100%{opacity:0.5;} }
          /* Кнопка "Назад" на ПК */
-        .back-btn-container {
-            position: fixed; 
-            top: 20px; 
-            left: 20px; 
-            z-index: 100000; 
-        }
+        
 
         #notification {
             position: absolute;
@@ -363,12 +358,7 @@
             text-shadow: var(--crt-glow);
         }
 /* Расположение кнопки "Назад" на компьютерах */
-        .back-btn-container {
-            position: fixed; 
-            top: 20px; 
-            left: 20px; 
-            z-index: 100000; 
-        }
+       
 
         /* Мобильные адаптивные стили */
         /* Полностью обновленные мобильные адаптивные стили */
@@ -413,12 +403,33 @@
             }
 
             
-            .back-btn-container {
-                top: auto;
-                left: 50%; 
-                bottom: 20px;
-                transform: translateX(-50%);
-            }
+            
+        }
+/* Единый стиль кнопки для ПК и мобилок */
+        .back-btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px auto; /* Делает отступ и центрирует кнопку на любом экране */
+            width: 100%;
+        }
+
+        .back-btn-container a {
+            background: #000; 
+            color: #0f0; 
+            padding: 10px 20px; 
+            border: 2px solid #0f0; 
+            text-decoration: none; 
+            font-family: monospace;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            transition: all 0.2s;
+        }
+
+        .back-btn-container a:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 15px #0f0;
         }
     </style>
 </head>
@@ -428,7 +439,7 @@
     <a href="index.html" style="background:#000; color:#0f0; padding:10px 15px; border:2px solid #0f0; text-decoration:none; font-family:monospace; display:block;">← НА САЙТ</a>
 </div>
 <div class="back-btn-container">
-    <a href="index.html" style="background:#000; color:#0f0; padding:10px 15px; border:2px solid #0f0; text-decoration:none; font-family:monospace; display:block;">← НА САЙТ</a>
+    <a href="index.html">← НА САЙТ</a>
 </div>
     <div class="game-title">The Debugger: Audio Edition</div>
 
