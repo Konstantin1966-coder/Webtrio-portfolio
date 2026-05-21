@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Debugger - Fixed Audio Button</title>
+    <style>
+        :root {
+            --term-green: #00ff41;
+            --term-dim: #008f11;
+            --bg-dark: #050505;
+            --crt-glow: 0 0 12px rgba(0, 255, 65, 0.6);
+            --coffee-color: #00d4ff;
+            --coffee-glow: 0 0 12px rgba(0, 212, 255, 0.6);
+            --bug-color: #ff3333;
+            --bug-glow: 0 0 12px rgba(255, 51, 51, 0.6);
+        }
+        body {
+            background-color: #0f1115;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: var(--term-green);
+            overflow: hidden;
+            touch-action: manipulation;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .game-title {
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-shadow: var(--crt-glow);
+            text-transform: uppercase;
+            text-align: center;
+        }
+        #game-wrapper {
+            position: relative;
+            padding: 10px;
+            background: #222;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.2);
+        }
+        #game-container {
+            position: relative;
+            width: 700px;
+            height: 450px;
+            background-color: var(--bg-dark);
+            border: 4px solid #111;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        #game-container::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+            z-index: 20;
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+        .shake { animation: shakeAnim 0.15s linear infinite; }
+        @keyframes shakeAnim {
+            0% { transform: translate(2px, 1px); }
+            20% { transform: translate(-2px, -1px); }
+            40% { transform: translate(1px, -2px); }
+            60% { transform: translate(-1px, 2px); }
+            80% { transform: translate(2px, -1px); }
+            100% { transform: translate(0px, 0px); }
+        }
+        #header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            font-size: 20px;
+            text-shadow: var(--crt-glow);
+            border-bottom: 1px dashed rgba(0, 255, 65, 0.2);
+            position: relative;
+            z-index: 30;
+        }
+        .stat-box {
+            background: rgba(0, 255, 65, 0.05);
+            padding: 5px 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 65, 0.2);
+        }
+        #audio-toggle {
+            background: rgba(0, 255, 65, 0.05);
+            border: 1px solid #444;
+            color: #aaa;
+            padding: 5px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #audio-toggle:hover { background: #333; color: #fff; }
+        #lives { letter-spacing: 3px; }
+        #dev {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            z-index: 5;
+            transition: all 0.08s ease-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+        #dev::before {
+            content: "💻";
+            font-size: 48px;
+            filter: drop-shadow(var(--crt-glow));
+        }
+        #dev.pos-tl { top: 145px; left: 140px; transform: scaleX(-1); }
+        #dev.pos-bl { top: 305px; left: 140px; transform: scaleX(-1); }
+        #dev.pos-tr { top: 145px; right: 140px; }
+        #dev.pos-br { top: 305px; right: 140px; }
+        .port {
+            position: absolute;
+            width: 150px;
+            height: 6px;
+            background: linear-gradient(90deg, #333, var(--term-dim));
+            box-shadow: var(--crt-glow);
+            border-radius: 3px;
+        }
+        .port-tl { top: 130px; left: 0; transform: rotate(14deg); transform-origin: left center; }
+        .port-bl { top: 290px; left: 0; transform: rotate(14deg); transform-origin: left center; }
+        .port-tr { top: 130px; right: 0; transform: rotate(-14deg); transform-origin: right center; background: linear-gradient(-90deg, #333, var(--term-dim)); }
+        .port-br { top: 290px; right: 0; transform: rotate(-14deg); transform-origin: right center; background: linear-gradient(-90deg, #333, var(--term-dim)); }
+        .entity {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            z-index: 4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+        .bug-sprite {
+            position: relative;
+            width: 18px;
+            height: 22px;
+            background: var(--bug-color);
+            border-radius: 8px 8px 4px 4px;
+            box-shadow: var(--bug-glow);
+        }
+        .bug-sprite::before {
+            content: "";
+            position: absolute;
+            top: -4px; left: 3px; width: 12px; height: 4px;
+            border: 2px solid var(--bug-color);
+            border-bottom: none; border-radius: 4px 4px 0 0;
+            box-sizing: border-box;
+        }
+        .bug-sprite::after {
+            content: "";
+            position: absolute;
+            top: 4px; left: -5px; width: 28px; height: 12px;
+            border-top: 2px solid var(--bug-color);
+            border-bottom: 2px solid var(--bug-color);
+            animation: bugLegs 0.12s linear infinite alternate;
+        }
+        @keyframes bugLegs {
+            0% { transform: skewX(-12deg); }
+            100% { transform: skewX(12deg); }
+        }
+        .coffee-sprite {
+            font-size: 26px;
+            filter: drop-shadow(var(--coffee-glow));
+            animation: float 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes float { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
+        .splat-sprite {
+            color: var(--bug-color);
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: var(--bug-glow);
+            animation: splatAnim 0.4s ease-out forwards;
+        }
+        @keyframes splatAnim {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .pop-text {
+            position: absolute;
+            font-weight: bold;
+            font-size: 22px;
+            z-index: 10;
+            animation: flyUp 0.5s ease-out forwards;
+        }
+        @keyframes flyUp {
+            0% { transform: translateY(0) scale(0.8); opacity: 1; }
+            100% { transform: translateY(-35px) scale(1.3); opacity: 0; }
+        }
+        .controls {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 6;
+        }
+        .btn {
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            background: rgba(0, 255, 65, 0.03);
+            border: 2px solid rgba(0, 255, 65, 0.15);
+            border-radius: 12px;
+            pointer-events: auto;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--term-dim);
+            font-weight: bold;
+            transition: all 0.1s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn:hover { background: rgba(0, 255, 65, 0.08); border-color: rgba(0, 255, 65, 0.4); color: var(--term-green); }
+        .btn:active, .btn.active { background: rgba(0,255,65,0.25); color: #fff; box-shadow: var(--crt-glow); transform: scale(0.95); }
+        .btn span { font-size: 10px; margin-top: 2px; color: #666; font-weight: normal; text-transform: uppercase; }
+        
+        .btn-tl { top: 95px; left: 20px; }
+        .btn-bl { top: 255px; left: 20px; }
+        .btn-tr { top: 95px; right: 20px; }
+        .btn-br { top: 255px; right: 20px; }
+        #settings-trigger {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #444;
+            color: #aaa;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            pointer-events: auto;
+            font-family: inherit;
+            display: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #settings-trigger:hover { background: #333; color: #fff; }
+        .modal {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 5, 0.96);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            text-align: center;
+            backdrop-filter: blur(4px);
+        }
+        #overlay, #settings-modal, #pause-modal { display: none; }
+        #main-menu { display: flex; }
+        .menu-btn {
+            background: none;
+            border: 2px solid var(--term-green);
+            color: var(--term-green);
+            padding: 12px 30px;
+            font-family: inherit;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            box-shadow: var(--crt-glow);
+            width: 240px;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .menu-btn:hover { background: var(--term-green); color: black; box-shadow: 0 0 20px var(--term-green); }
+        .key-config {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+            width: 360px;
+        }
+        .key-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111;
+            padding: 10px 14px;
+            border: 1px solid #333;
+            border-radius: 6px;
+        }
+        .key-bind-btn {
+            background: #222;
+            border: 1px solid var(--term-green);
+            color: var(--term-green);
+            padding: 5px 10px;
+            cursor: pointer;
+            min-width: 80px;
+            border-radius: 4px;
+            font-family: inherit;
+            font-weight: bold;
+            text-align: center;
+        }
+        .key-bind-btn.waiting {
+            background: var(--bug-color);
+            color: #000;
+            border-color: var(--bug-color);
+            animation: pulse 0.8s infinite;
+        }
+        @keyframes pulse { 0%{opacity:0.5;} 50%{opacity:1;} 100%{opacity:0.5;} }
+         /* Кнопка "Назад" на ПК */
+        
+        #notification {
+            position: absolute;
+            bottom: 25px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+            text-shadow: var(--crt-glow);
+        }
+
+/* Расположение кнопки "Назад" на компьютерах */
+       
+        /* Мобильные адаптивные стили */
+        /* Полностью обновленные мобильные адаптивные стили */
+        /* Полностью обновленные мобильные адаптивные стили */
+      /* Чистые мобильные стили без багов */
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden; 
+                overflow-y: auto;
+                justify-content: flex-start;
+                padding-top: 10px; 
+            }
+            .game-title {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+            #game-wrapper {
+                padding: 0;
+                background: none;
+                box-shadow: none;
+                /* Чистый масштаб, чтобы интерфейс и счётчики не сжимались в ноль */
+                transform: scale(calc(100vw / 750)); 
+                transform-origin: top center;
+                margin-bottom: 20px; /* Заменили огромный минус на нормальный отступ */
+            }
+            #game-container {
+                border: 2px solid #333;
+                border-radius: 12px;
+                box-shadow: var(--crt-glow);
+            }
+            .btn {
+                width: 75px;
+                height: 75px;
+                background: rgba(0, 255, 65, 0.08);
+                border-color: rgba(0, 255, 65, 0.3);
+            }
+            * {
+                touch-action: manipulation;
+            }
+        } /* Конец мобильного блока */
+        /* Единая кнопка «Назад» в самом низу страницы для всех устройств */
+        .back-btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px auto; 
+            width: 100%;
+            clear: both;
+        }
+        .back-btn-container a {
+            background: #000; 
+            color: #0f0; 
+            padding: 10px 20px; 
+            border: 2px solid #0f0; 
+            text-decoration: none; 
+            font-family: monospace;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            transition: all 0.2s;
+        }
+        .back-btn-container a:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 15px #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-title">The Debugger: Audio Edition</div>
+    <div id="game-wrapper">
+        <div id="game-container">
+            
+            <div id="header">
+                <div class="stat-box">FIXED: <span id="score">000</span></div>
+                <button id="audio-toggle" onclick="toggleAudio()">🔇 Muted</button>
+                <div class="stat-box">STABILITY: <span id="lives">|||</span></div>
+            </div>
+            <div class="port port-tl"></div>
+            <div class="port port-bl"></div>
+            <div class="port port-tr"></div>
+            <div class="port port-br"></div>
+            <div id="dev" class="pos-br"></div>
+            <div class="controls">
+                <div id="btn-tl" class="btn btn-tl">Q<span>Top-L</span></div>
+                <div id="btn-bl" class="btn btn-bl">A<span>Bot-L</span></div>
+                <div id="btn-tr" class="btn btn-tr">P<span>Top-R</span></div>
+                <div id="btn-br" class="btn btn-br">L<span>Bot-R</span></div>
+                
+                <button id="settings-trigger" onclick="togglePauseKeyboard()">⚙️ Pause [Space]</button>
+            </div>
+            <div id="notification">SYSTEM RECOVERED +1</div>
+            <div id="main-menu" class="modal">
+                <h1 style="color: var(--term-green); letter-spacing: 4px; margin: 0 0 10px 0; font-size: 36px; filter: drop-shadow(var(--crt-glow))">THE DEBUGGER</h1>
+                <p style="color: #666; margin: 0 0 30px 0; font-size: 14px;">Catch bugs. Drink coffee. Save production.</p>
+                <button class="menu-btn" onclick="startGame()">START GAME</button>
+                <button class="menu-btn" onclick="openSettings('menu')">⚙️ SETTINGS</button>
+            </div>
+            <div id="pause-modal" class="modal">
+                <h1 style="color: var(--coffee-color); letter-spacing: 3px; margin: 0; font-size: 32px; filter: drop-shadow(var(--coffee-glow))">SYSTEM PAUSED</h1>
+                <p style="color: #aaa; margin: 15px 0 25px 0; font-size: 14px;">Игра приостановлена. Пробел, чтобы продолжить.</p>
+                <button class="menu-btn" onclick="togglePauseKeyboard()" style="border-color: var(--coffee-color); color: var(--coffee-color);">RESUME PROCESS</button>
+                <button class="menu-btn" onclick="openSettings('game')">⚙️ CONFIGURE KEYS</button>
+                <button class="menu-btn" onclick="backToMainMenu()" style="border-color: #555; color: #888;">ABORT TO MENU</button>
+            </div>
+            <div id="overlay" class="modal">
+                <h1 style="color: var(--bug-color); letter-spacing: 5px; margin: 0; font-size: 40px; filter: drop-shadow(var(--bug-glow))">FATAL ERROR</h1>
+                <p id="cause" style="color: #aaa; margin: 15px 0;">Stack Overflow: Too many bugs</p>
+                <p style="font-size: 20px;">TOTAL_COMMITS: <span id="final-score" style="color:#fff; font-weight:bold;">0</span></p>
+                <button class="menu-btn" onclick="resetGame()">RELOAD ENVIRONMENT</button>
+                <button class="menu-btn" onclick="backToMainMenu()">MAIN MENU</button>
+            </div>
+            <div id="settings-modal" class="modal">
+                <h2 style="margin: 0 0 5px 0; color: #fff; letter-spacing: 1px;">KEYBOARD CONFIG</h2>
+                <p style="font-size:13px; color: #888; margin-bottom: 10px;">Нажмите позицию, затем кнопку на клавиатуре</p>
+                
+                <div class="key-config">
+                    <div class="key-row"><span>Top-Left:</span> <button id="bind-tl" class="key-bind-btn" onclick="startBinding('tl')">Q</button></div>
+                    <div class="key-row"><span>Top-Right:</span> <button id="bind-tr" class="key-bind-btn" onclick="startBinding('tr')">P</button></div>
+                    <div class="key-row"><span>Bot-Left:</span> <button id="bind-bl" class="key-bind-btn" onclick="startBinding('bl')">A</button></div>
+                    <div class="key-row"><span>Bot-Right:</span> <button id="bind-br" class="key-bind-btn" onclick="startBinding('br')">L</button></div>
+                </div>
+                
+                <button class="menu-btn" onclick="closeSettings()">SAVE & BACK</button>
+            </div>
+        </div>
+    </div>
+    <div class="back-btn-container">
+        <a href="games.html">← Главная Игры</a>
+    </div>
+    <script>
+        const dev = document.getElementById('dev');
+        const scoreDisplay = document.getElementById('score');
+        const livesDisplay = document.getElementById('lives');
+        const gameContainer = document.getElementById('game-container');
+        const overlay = document.getElementById('overlay');
+        const mainMenu = document.getElementById('main-menu');
+        const settingsModal = document.getElementById('settings-modal');
+        const pauseModal = document.getElementById('pause-modal');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const notification = document.getElementById('notification');
+        const settingsTrigger = document.getElementById('settings-trigger');
+        const audioToggleBtn = document.getElementById('audio-toggle');
+        
+        let score = 0;
+        let lives = 3;
+        let currentPos = 'br';
+        let gameActive = false; 
+        let isSettingsOpen = false;
+        let isPaused = false;
+        let settingsSource = 'menu'; 
+        let speed = 2000;       
+        let spawnRate = 1900;   
+        let spawnLoop = null;
+        let keyBinds = { 'q': 'tl', 'a': 'bl', 'p': 'tr', 'l': 'br' };
+        let bindingTarget = null;
+        let activeEntities = [];
+        // ЗВУКОВОЙ ДВИЖОК (Web Audio API)
+        let audioCtx = null;
+        let isMuted = true;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        function playSound(type) {
+            if (isMuted) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            if (type === 'hit') { 
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } 
+            else if (type === 'coffee') { 
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.linearRampToValueAtTime(800, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } 
+            else if (type === 'miss') { 
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(60, now + 0.25);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } 
+            else if (type === 'gameover') { 
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(40, now + 0.6);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+        function toggleAudio() {
+            initAudio();
+            isMuted = !isMuted;
+            audioToggleBtn.innerText = isMuted ? "🔇 Muted" : "🔊 Sound On";
+            audioToggleBtn.style.color = isMuted ? "#aaa" : "var(--term-green)";
+            audioToggleBtn.style.borderColor = isMuted ? "#444" : "var(--term-green)";
+        }
+        if(localStorage.getItem('debugger_binds_v9')) {
+            keyBinds = JSON.parse(localStorage.getItem('debugger_binds_v9'));
+        }
+        function startGame() {
+            initAudio();
+            if (lives <= 0 || score > 0) { 
+                score = 0;
+                lives = 3;
+                speed = 2000;
+                spawnRate = 1900;
+                scoreDisplay.innerText = '000';
+                updateLives();
+                clearAllEntities();
+            }
+            mainMenu.style.display = 'none';
+            overlay.style.display = 'none';
+            pauseModal.style.display = 'none';
+            settingsTrigger.style.display = 'block'; 
+            gameActive = true;
+            isPaused = false;
+            isSettingsOpen = false;
+            updateLoops();
+        }
+        function moveDev(pos) {
+            if (!gameActive || isSettingsOpen || isPaused || lives <= 0) return;
+            dev.className = 'pos-' + pos;
+            currentPos = pos;
+            const btn = document.getElementById('btn-' + pos);
+            if(btn) {
+                btn.classList.add('active');
+                setTimeout(() => btn.classList.remove('active'), 80);
+            }
+        }
+        const positions = ['tl', 'bl', 'tr', 'br'];
+        positions.forEach(pos => {
+            const el = document.getElementById('btn-' + pos);
+            
+            el.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                moveDev(pos);
+            }, {passive: false});
+            el.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                moveDev(pos);
+            });
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.code === 'Space') {
+                e.preventDefault(); 
+                if (!isSettingsOpen && (gameActive || isPaused) && lives > 0) {
+                    togglePauseKeyboard();
+                    return;
+                }
+            }
+            const pressedKey = e.key.toLowerCase();
+            if (bindingTarget) {
+                e.preventDefault();
+                for (let k in keyBinds) {
+                    if (keyBinds[k] === bindingTarget) delete keyBinds[k];
+                }
+                keyBinds[pressedKey] = bindingTarget;
+                localStorage.setItem('debugger_binds_v9', JSON.stringify(keyBinds));
+                bindingTarget = null;
+                updateBindButtonsText();
+                return;
+            }
+            if (!gameActive || isSettingsOpen || isPaused || lives <= 0) return;
+            if (keyBinds[pressedKey]) moveDev(keyBinds[pressedKey]);
+            
+            if (e.code === 'ArrowUp') currentPos.includes('r') ? moveDev('tr') : moveDev('tl');
+            if (e.code === 'ArrowDown') currentPos.includes('r') ? moveDev('br') : moveDev('bl');
+            if (e.code === 'ArrowLeft') currentPos.includes('t') ? moveDev('tl') : moveDev('bl');
+            if (e.code === 'ArrowRight') currentPos.includes('t') ? moveDev('tr') : moveDev('br');
+        });
+        function togglePauseKeyboard() {
+            if (isSettingsOpen || lives <= 0) return; 
+            if (!isPaused) {
+                isPaused = true;
+                gameActive = false;
+                clearInterval(spawnLoop);
+                pauseModal.style.display = 'flex';
+            } else {
+                isPaused = false;
+                gameActive = true;
+                pauseModal.style.display = 'none';
+                updateLoops();
+            }
+        }
+        function startBinding(pos) {
+            bindingTarget = pos;
+            document.querySelectorAll('.key-bind-btn').forEach(b => b.classList.remove('waiting'));
+            document.getElementById('bind-' + pos).classList.add('waiting');
+            document.getElementById('bind-' + pos).innerText = 'PRESS...';
+        }
+        function updateBindButtonsText() {
+            positions.forEach(pos => {
+                let keyName = Object.keys(keyBinds).find(key => keyBinds[key] === pos) || 'None';
+                if(keyName === ' ') keyName = 'Space';
+                document.getElementById('bind-' + pos).innerText = keyName.toUpperCase();
+                const btn = document.getElementById('btn-' + pos);
+                const label = btn.querySelector('span').outerHTML;
+                btn.innerHTML = keyName.toUpperCase() + label;
+                document.getElementById('bind-' + pos).classList.remove('waiting');
+            });
+        }
+        function openSettings(source = 'game') {
+            isSettingsOpen = true;
+            settingsSource = source;
+            gameActive = false;
+            clearInterval(spawnLoop);
+            updateBindButtonsText();
+            mainMenu.style.display = 'none';
+            pauseModal.style.display = 'none';
+            settingsModal.style.display = 'flex';
+        }
+        function closeSettings() {
+            isSettingsOpen = false;
+            bindingTarget = null;
+            settingsModal.style.display = 'none';
+            
+            if (settingsSource === 'menu') {
+                mainMenu.style.display = 'flex';
+                isPaused = false;
+                gameActive = false;
+            } else {
+                isPaused = true;
+                gameActive = false;
+                pauseModal.style.display = 'flex';
+            }
+        }
+        function spawnEntity() {
+            if (!gameActive || isSettingsOpen || isPaused || lives <= 0) return;
+            const isCoffee = Math.random() < 0.20; 
+            const startPos = positions[Math.floor(Math.random() * positions.length)];
+            
+            const entity = document.createElement('div');
+            entity.className = 'entity';
+            entity.innerHTML = isCoffee ? '<div class="coffee-sprite">☕️</div>' : '<div class="bug-sprite"></div>';
+            gameContainer.appendChild(entity);
+            if (startPos === 'tl') {
+               entity.style.left = '0px';
+               entity.style.top = '106px';  // startY_Top
+    }          else if (startPos === 'bl') {
+               entity.style.left = '0px';
+               entity.style.top = '266px';  // startY_Bot
+    }          else if (startPos === 'tr') {
+               entity.style.right = '0px';
+               entity.style.top = '106px';
+               entity.style.transform = 'scaleX(-1)';
+     }         else if (startPos === 'br') {
+               entity.style.right = '0px';
+               entity.style.top = '266px';
+               entity.style.transform = 'scaleX(-1)';
+     }
+            const endX = 145; 
+            const startY_Top = 130 - 24; 
+            const startY_Bot = 290 - 24;
+            const tg14 = 0.25; 
+            let progress = 0; 
+            let fallProgress = 0; 
+            
+            const moveInterval = setInterval(() => {
+                if (isSettingsOpen || isPaused || !gameActive || lives <= 0) return;
+                if (progress < 1) {
+                    progress += 0.1;
+                    const currentX = progress * endX;
+                    const currentY = currentX * tg14;
+                    if (startPos === 'tl') {
+                        entity.style.left = currentX + 'px';
+                        entity.style.top = (startY_Top + currentY) + 'px';
+                    } else if (startPos === 'bl') {
+                        entity.style.left = currentX + 'px';
+                        entity.style.top = (startY_Bot + currentY) + 'px';
+                    } else if (startPos === 'tr') {
+                        entity.style.right = currentX + 'px';
+                        entity.style.top = (startY_Top + currentY) + 'px';
+                        entity.style.transform = 'scaleX(-1)';
+                    } else if (startPos === 'br') {
+                        entity.style.right = currentX + 'px';
+                        entity.style.top = (startY_Bot + currentY) + 'px';
+                        entity.style.transform = 'scaleX(-1)';
+                    }
+                } else {
+                    fallProgress += 0.15; 
+                    
+                    const edgeY_Top = startY_Top + (endX * tg14);
+                    const edgeY_Bot = startY_Bot + (endX * tg14);
+                    const floorHeight = 85; 
+                    const isTop = startPos.startsWith('t');
+                    const baseEdgeY = isTop ? edgeY_Top : edgeY_Bot;
+                    
+                    let currentTop = baseEdgeY + (fallProgress * floorHeight);
+                    entity.style.top = currentTop + 'px';
+                    if (fallProgress >= 0.45 && fallProgress <= 0.65) {
+                        if (currentPos === startPos) {
+                            clearInterval(moveInterval);
+                            removeActiveEntity(moveInterval);
+                            collectEntity(startPos, isCoffee);
+                            entity.remove();
+                            return;
+                        }
+                    }
+                    if (fallProgress >= 1.0) {
+                        clearInterval(moveInterval);
+                        removeActiveEntity(moveInterval);
+                        entity.remove();
+                        if (!isCoffee) {
+                            triggerMiss(startPos, endX, baseEdgeY + floorHeight);
+                        }
+                    }
+                }
+            }, speed / 16);
+            activeEntities.push(moveInterval);
+        }
+        function removeActiveEntity(intervalId) {
+            activeEntities = activeEntities.filter(id => id !== intervalId);
+        }
+      function collectEntity(pos, isCoffee) {
+            if (lives <= 0) return;
+            if (isCoffee) {
+                playSound('coffee'); 
+                if (lives < 3) {
+                    lives++;
+                    showNotification("COFFEE BOOST: STABILITY +1");
+                    createPopText("+1 HP", pos, "var(--coffee-color)");
+                } else {
+                    /* Правильно прибавляем дробь через точку */
+                    score += 1;
+                    showNotification("ADRENALINE: +1 BUGS FIXED");
+                    createPopText("+1", pos, "var(--coffee-color)");
+                }
+                updateLives();
+            } else {
+                playSound('hit'); 
+                score+=2;
+                createPopText("+2", pos, "var(--term-green)");
+            }
+            
+            /* Выводим счётчик в красивом ретро-формате с нулями */
+            scoreDisplay.innerText = score.toString().padStart(3, '0');
+            
+            /* Усложняем игру каждые 10 баллов */
+            if (score > 0 && score % 10 === 0) {
+                speed *= 0.91;
+                spawnRate *= 0.91;
+                updateLoops();
+            }
+        }
+        function triggerMiss(startPos, posX, posY) {
+            if (lives <= 0) return; 
+            
+            playSound('miss'); 
+            lives--;
+            updateLives();
+            
+            const splat = document.createElement('div');
+            splat.className = 'entity splat-sprite';
+            splat.innerText = '💥';
+            splat.style.top = (posY - 10) + 'px';
+            
+            if (startPos.endsWith('l')) {
+                splat.style.left = posX + 'px';
+            } else {
+                splat.style.right = posX + 'px';
+            }
+            
+            gameContainer.appendChild(splat);
+            setTimeout(() => splat.remove(), 400);
+            gameContainer.classList.add('shake');
+            setTimeout(() => gameContainer.classList.remove('shake'), 150);
+            if (lives <= 0) {
+                gameOver();
+            }
+        }
+        function createPopText(text, pos, color) {
+            const pop = document.createElement('div');
+            pop.className = 'pop-text';
+            pop.innerText = text;
+            pop.style.color = color;
+            
+            if(pos === 'tl') { pop.style.top = '150px'; pop.style.left = '165px'; }
+            if(pos === 'bl') { pop.style.top = '310px'; pop.style.left = '165px'; }
+            if(pos === 'tr') { pop.style.top = '150px'; pop.style.right = '165px'; }
+            if(pos === 'br') { pop.style.top = '310px'; pop.style.right = '165px'; }
+            gameContainer.appendChild(pop);
+            setTimeout(() => pop.remove(), 500);
+        }
+        function showNotification(text) {
+            notification.innerText = text;
+            notification.style.opacity = '1';
+            setTimeout(() => notification.style.opacity = '0', 1500);
+        }
+        function updateLives() {
+            const displayLives = Math.max(0, lives);
+            livesDisplay.innerText = '|'.repeat(displayLives);
+            if(lives === 1) {
+                livesDisplay.style.color = 'var(--bug-color)';
+                livesDisplay.style.textShadow = 'var(--bug-glow)';
+            } else {
+                livesDisplay.style.color = 'var(--term-green)';
+                livesDisplay.style.textShadow = 'var(--crt-glow)';
+            }
+        }
+        function gameOver() {
+            playSound('gameover'); 
+            gameActive = false;
+            isPaused = false;
+            isSettingsOpen = false;
+            clearInterval(spawnLoop);
+            clearAllEntities();
+            finalScoreDisplay.innerText = score;
+            overlay.style.display = 'flex';
+        }
+        function updateLoops() {
+            clearInterval(spawnLoop);
+            if (gameActive && !isPaused && !isSettingsOpen && lives > 0) {
+                spawnLoop = setInterval(spawnEntity, spawnRate);
+            }
+        }
+        function clearAllEntities() {
+            activeEntities.forEach(id => clearInterval(id));
+            activeEntities = [];
+            document.querySelectorAll('.entity').forEach(e => e.remove());
+        }
+        function resetGame() {
+            score = 0;
+            lives = 3;
+            speed = 2000;
+            spawnRate = 1900;
+            scoreDisplay.innerText = '000';
+            updateLives();
+            overlay.style.display = 'none';
+            pauseModal.style.display = 'none';
+            clearAllEntities();
+            startGame();
+        }
+        function backToMainMenu() {
+            overlay.style.display = 'none';
+            pauseModal.style.display = 'none';
+            settingsTrigger.style.display = 'none';
+            isPaused = false;
+            gameActive = false;
+            isSettingsOpen = false;
+            lives = 0; 
+            clearAllEntities();
+            mainMenu.style.display = 'flex';
+        }
+        updateBindButtonsText();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ff0e2c01a21b93e',t:'MTc3OTMzODI0NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
