@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Укажем путь к карте сайта (создадим на следующем шаге, но строку можно оставить сразу)
+Sitemap: https://konstantin1966-coder.github.io/Webtrio-portfolio/sitemap.xml
