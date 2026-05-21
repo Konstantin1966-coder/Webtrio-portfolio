@@ -16,7 +16,6 @@
             --bug-color: #ff3333;
             --bug-glow: 0 0 12px rgba(255, 51, 51, 0.6);
         }
-
         body {
             background-color: #0f1115;
             display: flex;
@@ -32,7 +31,6 @@
             -webkit-user-select: none;
             user-select: none;
         }
-
         .game-title {
             font-size: 24px;
             letter-spacing: 2px;
@@ -41,7 +39,6 @@
             text-transform: uppercase;
             text-align: center;
         }
-
         #game-wrapper {
             position: relative;
             padding: 10px;
@@ -49,7 +46,6 @@
             border-radius: 16px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.2);
         }
-
         #game-container {
             position: relative;
             width: 700px;
@@ -59,7 +55,6 @@
             border-radius: 8px;
             overflow: hidden;
         }
-
         #game-container::after {
             content: " ";
             display: block;
@@ -70,7 +65,6 @@
             background-size: 100% 4px;
             pointer-events: none;
         }
-
         .shake { animation: shakeAnim 0.15s linear infinite; }
         @keyframes shakeAnim {
             0% { transform: translate(2px, 1px); }
@@ -80,7 +74,6 @@
             80% { transform: translate(2px, -1px); }
             100% { transform: translate(0px, 0px); }
         }
-
         #header {
             display: flex;
             justify-content: space-between;
@@ -92,14 +85,12 @@
             position: relative;
             z-index: 30;
         }
-
         .stat-box {
             background: rgba(0, 255, 65, 0.05);
             padding: 5px 12px;
             border-radius: 4px;
             border: 1px solid rgba(0, 255, 65, 0.2);
         }
-
         #audio-toggle {
             background: rgba(0, 255, 65, 0.05);
             border: 1px solid #444;
@@ -113,9 +104,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         #audio-toggle:hover { background: #333; color: #fff; }
-
         #lives { letter-spacing: 3px; }
-
         #dev {
             position: absolute;
             width: 90px;
@@ -136,7 +125,6 @@
         #dev.pos-bl { top: 305px; left: 140px; transform: scaleX(-1); }
         #dev.pos-tr { top: 145px; right: 140px; }
         #dev.pos-br { top: 305px; right: 140px; }
-
         .port {
             position: absolute;
             width: 150px;
@@ -149,7 +137,6 @@
         .port-bl { top: 290px; left: 0; transform: rotate(14deg); transform-origin: left center; }
         .port-tr { top: 130px; right: 0; transform: rotate(-14deg); transform-origin: right center; background: linear-gradient(-90deg, #333, var(--term-dim)); }
         .port-br { top: 290px; right: 0; transform: rotate(-14deg); transform-origin: right center; background: linear-gradient(-90deg, #333, var(--term-dim)); }
-
         .entity {
             position: absolute;
             width: 30px;
@@ -160,7 +147,6 @@
             align-items: center;
             pointer-events: none;
         }
-
         .bug-sprite {
             position: relative;
             width: 18px;
@@ -189,14 +175,12 @@
             0% { transform: skewX(-12deg); }
             100% { transform: skewX(12deg); }
         }
-
         .coffee-sprite {
             font-size: 26px;
             filter: drop-shadow(var(--coffee-glow));
             animation: float 0.3s ease-in-out infinite alternate;
         }
         @keyframes float { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
-
         .splat-sprite {
             color: var(--bug-color);
             font-size: 24px;
@@ -208,7 +192,6 @@
             0% { transform: scale(0.5); opacity: 1; }
             100% { transform: scale(1.5); opacity: 0; }
         }
-
         .pop-text {
             position: absolute;
             font-weight: bold;
@@ -220,7 +203,6 @@
             0% { transform: translateY(0) scale(0.8); opacity: 1; }
             100% { transform: translateY(-35px) scale(1.3); opacity: 0; }
         }
-
         .controls {
             position: absolute;
             width: 100%;
@@ -254,7 +236,6 @@
         .btn-bl { top: 255px; left: 20px; }
         .btn-tr { top: 95px; right: 20px; }
         .btn-br { top: 255px; right: 20px; }
-
         #settings-trigger {
             position: absolute;
             bottom: 15px;
@@ -272,7 +253,6 @@
             -webkit-tap-highlight-color: transparent;
         }
         #settings-trigger:hover { background: #333; color: #fff; }
-
         .modal {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -285,10 +265,8 @@
             text-align: center;
             backdrop-filter: blur(4px);
         }
-
         #overlay, #settings-modal, #pause-modal { display: none; }
         #main-menu { display: flex; }
-
         .menu-btn {
             background: none;
             border: 2px solid var(--term-green);
@@ -307,7 +285,6 @@
             -webkit-tap-highlight-color: transparent;
         }
         .menu-btn:hover { background: var(--term-green); color: black; box-shadow: 0 0 20px var(--term-green); }
-
         .key-config {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -345,7 +322,6 @@
         @keyframes pulse { 0%{opacity:0.5;} 50%{opacity:1;} 100%{opacity:0.5;} }
          /* Кнопка "Назад" на ПК */
         
-
         #notification {
             position: absolute;
             bottom: 25px;
@@ -357,9 +333,9 @@
             transition: opacity 0.3s;
             text-shadow: var(--crt-glow);
         }
+
 /* Расположение кнопки "Назад" на компьютерах */
        
-
         /* Мобильные адаптивные стили */
         /* Полностью обновленные мобильные адаптивные стили */
         /* Полностью обновленные мобильные адаптивные стили */
@@ -371,12 +347,10 @@
                 justify-content: flex-start;
                 padding-top: 10px; 
             }
-
             .game-title {
                 font-size: 18px;
                 margin-bottom: 10px;
             }
-
             #game-wrapper {
                 padding: 0;
                 background: none;
@@ -386,25 +360,21 @@
                 transform-origin: top center;
                 margin-bottom: 20px; /* Заменили огромный минус на нормальный отступ */
             }
-
             #game-container {
                 border: 2px solid #333;
                 border-radius: 12px;
                 box-shadow: var(--crt-glow);
             }
-
             .btn {
                 width: 75px;
                 height: 75px;
                 background: rgba(0, 255, 65, 0.08);
                 border-color: rgba(0, 255, 65, 0.3);
             }
-
             * {
                 touch-action: manipulation;
             }
         } /* Конец мобильного блока */
-
         /* Единая кнопка «Назад» в самом низу страницы для всех устройств */
         .back-btn-container {
             display: flex;
@@ -413,7 +383,6 @@
             width: 100%;
             clear: both;
         }
-
         .back-btn-container a {
             background: #000; 
             color: #0f0; 
@@ -426,17 +395,15 @@
             box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
             transition: all 0.2s;
         }
-
         .back-btn-container a:hover {
             background: #0f0;
             color: #000;
             box-shadow: 0 0 15px #0f0;
         }
-    </style> <head>
+    </style>
+</head>
 <body>
-
     <div class="game-title">The Debugger: Audio Edition</div>
-
     <div id="game-wrapper">
         <div id="game-container">
             
@@ -445,14 +412,11 @@
                 <button id="audio-toggle" onclick="toggleAudio()">🔇 Muted</button>
                 <div class="stat-box">STABILITY: <span id="lives">|||</span></div>
             </div>
-
             <div class="port port-tl"></div>
             <div class="port port-bl"></div>
             <div class="port port-tr"></div>
             <div class="port port-br"></div>
-
             <div id="dev" class="pos-br"></div>
-
             <div class="controls">
                 <div id="btn-tl" class="btn btn-tl">Q<span>Top-L</span></div>
                 <div id="btn-bl" class="btn btn-bl">A<span>Bot-L</span></div>
@@ -461,16 +425,13 @@
                 
                 <button id="settings-trigger" onclick="togglePauseKeyboard()">⚙️ Pause [Space]</button>
             </div>
-
             <div id="notification">SYSTEM RECOVERED +1</div>
-
             <div id="main-menu" class="modal">
                 <h1 style="color: var(--term-green); letter-spacing: 4px; margin: 0 0 10px 0; font-size: 36px; filter: drop-shadow(var(--crt-glow))">THE DEBUGGER</h1>
                 <p style="color: #666; margin: 0 0 30px 0; font-size: 14px;">Catch bugs. Drink coffee. Save production.</p>
                 <button class="menu-btn" onclick="startGame()">START GAME</button>
                 <button class="menu-btn" onclick="openSettings('menu')">⚙️ SETTINGS</button>
             </div>
-
             <div id="pause-modal" class="modal">
                 <h1 style="color: var(--coffee-color); letter-spacing: 3px; margin: 0; font-size: 32px; filter: drop-shadow(var(--coffee-glow))">SYSTEM PAUSED</h1>
                 <p style="color: #aaa; margin: 15px 0 25px 0; font-size: 14px;">Игра приостановлена. Пробел, чтобы продолжить.</p>
@@ -478,7 +439,6 @@
                 <button class="menu-btn" onclick="openSettings('game')">⚙️ CONFIGURE KEYS</button>
                 <button class="menu-btn" onclick="backToMainMenu()" style="border-color: #555; color: #888;">ABORT TO MENU</button>
             </div>
-
             <div id="overlay" class="modal">
                 <h1 style="color: var(--bug-color); letter-spacing: 5px; margin: 0; font-size: 40px; filter: drop-shadow(var(--bug-glow))">FATAL ERROR</h1>
                 <p id="cause" style="color: #aaa; margin: 15px 0;">Stack Overflow: Too many bugs</p>
@@ -486,7 +446,6 @@
                 <button class="menu-btn" onclick="resetGame()">RELOAD ENVIRONMENT</button>
                 <button class="menu-btn" onclick="backToMainMenu()">MAIN MENU</button>
             </div>
-
             <div id="settings-modal" class="modal">
                 <h2 style="margin: 0 0 5px 0; color: #fff; letter-spacing: 1px;">KEYBOARD CONFIG</h2>
                 <p style="font-size:13px; color: #888; margin-bottom: 10px;">Нажмите позицию, затем кнопку на клавиатуре</p>
@@ -500,9 +459,11 @@
                 
                 <button class="menu-btn" onclick="closeSettings()">SAVE & BACK</button>
             </div>
-        </div> </div> <div class="back-btn-container">
+        </div>
+    </div>
+    <div class="back-btn-container">
         <a href="games.html">← Главная Игры</a>
-
+    </div>
     <script>
         const dev = document.getElementById('dev');
         const scoreDisplay = document.getElementById('score');
@@ -527,33 +488,26 @@
         let speed = 2000;       
         let spawnRate = 1900;   
         let spawnLoop = null;
-
         let keyBinds = { 'q': 'tl', 'a': 'bl', 'p': 'tr', 'l': 'br' };
         let bindingTarget = null;
         let activeEntities = [];
-
         // ЗВУКОВОЙ ДВИЖОК (Web Audio API)
         let audioCtx = null;
         let isMuted = true;
-
         function initAudio() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
         }
-
         function playSound(type) {
             if (isMuted) return;
             initAudio();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-
             const now = audioCtx.currentTime;
-
             if (type === 'hit') { 
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(600, now);
@@ -591,7 +545,6 @@
                 osc.stop(now + 0.6);
             }
         }
-
         function toggleAudio() {
             initAudio();
             isMuted = !isMuted;
@@ -599,11 +552,9 @@
             audioToggleBtn.style.color = isMuted ? "#aaa" : "var(--term-green)";
             audioToggleBtn.style.borderColor = isMuted ? "#444" : "var(--term-green)";
         }
-
         if(localStorage.getItem('debugger_binds_v9')) {
             keyBinds = JSON.parse(localStorage.getItem('debugger_binds_v9'));
         }
-
         function startGame() {
             initAudio();
             if (lives <= 0 || score > 0) { 
@@ -624,34 +575,29 @@
             isSettingsOpen = false;
             updateLoops();
         }
-
         function moveDev(pos) {
             if (!gameActive || isSettingsOpen || isPaused || lives <= 0) return;
             dev.className = 'pos-' + pos;
             currentPos = pos;
-
-            const btn = document.getElementById(`btn-${pos}`);
+            const btn = document.getElementById('btn-' + pos);
             if(btn) {
                 btn.classList.add('active');
                 setTimeout(() => btn.classList.remove('active'), 80);
             }
         }
-
         const positions = ['tl', 'bl', 'tr', 'br'];
         positions.forEach(pos => {
-            const el = document.getElementById(`btn-${pos}`);
+            const el = document.getElementById('btn-' + pos);
             
             el.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 moveDev(pos);
             }, {passive: false});
-
             el.addEventListener('mousedown', (e) => {
                 e.preventDefault();
                 moveDev(pos);
             });
         });
-
         document.addEventListener('keydown', (e) => {
             if (e.key === ' ' || e.code === 'Space') {
                 e.preventDefault(); 
@@ -660,9 +606,7 @@
                     return;
                 }
             }
-
             const pressedKey = e.key.toLowerCase();
-
             if (bindingTarget) {
                 e.preventDefault();
                 for (let k in keyBinds) {
@@ -674,9 +618,7 @@
                 updateBindButtonsText();
                 return;
             }
-
             if (!gameActive || isSettingsOpen || isPaused || lives <= 0) return;
-
             if (keyBinds[pressedKey]) moveDev(keyBinds[pressedKey]);
             
             if (e.code === 'ArrowUp') currentPos.includes('r') ? moveDev('tr') : moveDev('tl');
@@ -684,10 +626,8 @@
             if (e.code === 'ArrowLeft') currentPos.includes('t') ? moveDev('tl') : moveDev('bl');
             if (e.code === 'ArrowRight') currentPos.includes('t') ? moveDev('tr') : moveDev('br');
         });
-
         function togglePauseKeyboard() {
             if (isSettingsOpen || lives <= 0) return; 
-
             if (!isPaused) {
                 isPaused = true;
                 gameActive = false;
@@ -700,26 +640,23 @@
                 updateLoops();
             }
         }
-
         function startBinding(pos) {
             bindingTarget = pos;
             document.querySelectorAll('.key-bind-btn').forEach(b => b.classList.remove('waiting'));
-            document.getElementById(`bind-${pos}`).classList.add('waiting');
-            document.getElementById(`bind-${pos}`).innerText = 'PRESS...';
+            document.getElementById('bind-' + pos).classList.add('waiting');
+            document.getElementById('bind-' + pos).innerText = 'PRESS...';
         }
-
         function updateBindButtonsText() {
             positions.forEach(pos => {
                 let keyName = Object.keys(keyBinds).find(key => keyBinds[key] === pos) || 'None';
                 if(keyName === ' ') keyName = 'Space';
-                document.getElementById(`bind-${pos}`).innerText = keyName.toUpperCase();
-                const btn = document.getElementById(`btn-${pos}`);
+                document.getElementById('bind-' + pos).innerText = keyName.toUpperCase();
+                const btn = document.getElementById('btn-' + pos);
                 const label = btn.querySelector('span').outerHTML;
                 btn.innerHTML = keyName.toUpperCase() + label;
-                document.getElementById(`bind-${pos}`).classList.remove('waiting');
+                document.getElementById('bind-' + pos).classList.remove('waiting');
             });
         }
-
         function openSettings(source = 'game') {
             isSettingsOpen = true;
             settingsSource = source;
@@ -730,7 +667,6 @@
             pauseModal.style.display = 'none';
             settingsModal.style.display = 'flex';
         }
-
         function closeSettings() {
             isSettingsOpen = false;
             bindingTarget = null;
@@ -746,10 +682,8 @@
                 pauseModal.style.display = 'flex';
             }
         }
-
         function spawnEntity() {
             if (!gameActive || isSettingsOpen || isPaused || lives <= 0) return;
-
             const isCoffee = Math.random() < 0.20; 
             const startPos = positions[Math.floor(Math.random() * positions.length)];
             
@@ -757,7 +691,6 @@
             entity.className = 'entity';
             entity.innerHTML = isCoffee ? '<div class="coffee-sprite">☕️</div>' : '<div class="bug-sprite"></div>';
             gameContainer.appendChild(entity);
-
             if (startPos === 'tl') {
                entity.style.left = '0px';
                entity.style.top = '106px';  // startY_Top
@@ -773,23 +706,19 @@
                entity.style.top = '266px';
                entity.style.transform = 'scaleX(-1)';
      }
-
             const endX = 145; 
             const startY_Top = 130 - 24; 
             const startY_Bot = 290 - 24;
             const tg14 = 0.25; 
-
             let progress = 0; 
             let fallProgress = 0; 
             
             const moveInterval = setInterval(() => {
                 if (isSettingsOpen || isPaused || !gameActive || lives <= 0) return;
-
                 if (progress < 1) {
                     progress += 0.1;
                     const currentX = progress * endX;
                     const currentY = currentX * tg14;
-
                     if (startPos === 'tl') {
                         entity.style.left = currentX + 'px';
                         entity.style.top = (startY_Top + currentY) + 'px';
@@ -811,13 +740,11 @@
                     const edgeY_Top = startY_Top + (endX * tg14);
                     const edgeY_Bot = startY_Bot + (endX * tg14);
                     const floorHeight = 85; 
-
                     const isTop = startPos.startsWith('t');
                     const baseEdgeY = isTop ? edgeY_Top : edgeY_Bot;
                     
                     let currentTop = baseEdgeY + (fallProgress * floorHeight);
                     entity.style.top = currentTop + 'px';
-
                     if (fallProgress >= 0.45 && fallProgress <= 0.65) {
                         if (currentPos === startPos) {
                             clearInterval(moveInterval);
@@ -827,7 +754,6 @@
                             return;
                         }
                     }
-
                     if (fallProgress >= 1.0) {
                         clearInterval(moveInterval);
                         removeActiveEntity(moveInterval);
@@ -838,14 +764,11 @@
                     }
                 }
             }, speed / 16);
-
             activeEntities.push(moveInterval);
         }
-
         function removeActiveEntity(intervalId) {
             activeEntities = activeEntities.filter(id => id !== intervalId);
         }
-
       function collectEntity(pos, isCoffee) {
             if (lives <= 0) return;
             if (isCoffee) {
@@ -877,7 +800,6 @@
                 updateLoops();
             }
         }
-
         function triggerMiss(startPos, posX, posY) {
             if (lives <= 0) return; 
             
@@ -898,15 +820,12 @@
             
             gameContainer.appendChild(splat);
             setTimeout(() => splat.remove(), 400);
-
             gameContainer.classList.add('shake');
             setTimeout(() => gameContainer.classList.remove('shake'), 150);
-
             if (lives <= 0) {
                 gameOver();
             }
         }
-
         function createPopText(text, pos, color) {
             const pop = document.createElement('div');
             pop.className = 'pop-text';
@@ -917,17 +836,14 @@
             if(pos === 'bl') { pop.style.top = '310px'; pop.style.left = '165px'; }
             if(pos === 'tr') { pop.style.top = '150px'; pop.style.right = '165px'; }
             if(pos === 'br') { pop.style.top = '310px'; pop.style.right = '165px'; }
-
             gameContainer.appendChild(pop);
             setTimeout(() => pop.remove(), 500);
         }
-
         function showNotification(text) {
             notification.innerText = text;
             notification.style.opacity = '1';
             setTimeout(() => notification.style.opacity = '0', 1500);
         }
-
         function updateLives() {
             const displayLives = Math.max(0, lives);
             livesDisplay.innerText = '|'.repeat(displayLives);
@@ -939,7 +855,6 @@
                 livesDisplay.style.textShadow = 'var(--crt-glow)';
             }
         }
-
         function gameOver() {
             playSound('gameover'); 
             gameActive = false;
@@ -950,20 +865,17 @@
             finalScoreDisplay.innerText = score;
             overlay.style.display = 'flex';
         }
-
         function updateLoops() {
             clearInterval(spawnLoop);
             if (gameActive && !isPaused && !isSettingsOpen && lives > 0) {
                 spawnLoop = setInterval(spawnEntity, spawnRate);
             }
         }
-
         function clearAllEntities() {
             activeEntities.forEach(id => clearInterval(id));
             activeEntities = [];
             document.querySelectorAll('.entity').forEach(e => e.remove());
         }
-
         function resetGame() {
             score = 0;
             lives = 3;
@@ -976,7 +888,6 @@
             clearAllEntities();
             startGame();
         }
-
         function backToMainMenu() {
             overlay.style.display = 'none';
             pauseModal.style.display = 'none';
@@ -988,8 +899,7 @@
             clearAllEntities();
             mainMenu.style.display = 'flex';
         }
-
         updateBindButtonsText();
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ff0a7adcb22afa0',t:'MTc3OTMzNTgyNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
