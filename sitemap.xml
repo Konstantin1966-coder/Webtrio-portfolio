@@ -2,14 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://konstantin1966-coder.github.io/Webtrio-portfolio/</loc>
-    <lastmod>2026-05-12</lastmod>
+    <lastmod>2026-05-22</lastmod>
     <priority>1.0</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://konstantin1966-coder.github.io/Webtrio-portfolio/puzzle.html</loc>
-    <lastmod>2026-05-12</lastmod>
+    <loc>https://konstantin1966-coder.github.io/Webtrio-portfolio/games.html</loc>
+    <lastmod>2026-05-22</lastmod>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://konstantin1966-coder.github.io/Webtrio-portfolio/debugger.html</loc>
+    <lastmod>2026-05-22</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://konstantin1966-coder.github.io/Webtrio-portfolio/puzzle.html</loc>
+    <lastmod>2026-05-22</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
 </urlset>
+SEO: добавлены games.html и debugger.html в sitemap
